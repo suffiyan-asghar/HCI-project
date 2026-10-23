@@ -1,0 +1,186 @@
+{
+  "note": "SAMPLE BANK for building the frontend. Blocks B and C reuse block A until the full 44-question bank is written (build step 2).",
+  "warmup": ["w1", "w2", "w3", "w4"],
+  "blocks": {
+    "A": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] },
+    "B": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] },
+    "C": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] }
+  },
+  "questions": [
+    {
+      "id": "w1",
+      "type": "blank",
+      "stem": "Although the critic praised the novel's ambitious structure, she found its prose ______, weighed down by needless ornament.",
+      "options": ["lucid", "terse", "overwrought", "plain", "candid"],
+      "correct": 2,
+      "hint": ["\"Although\" signals a contrast with the praise, so the blank is a criticism.", "\"Weighed down by needless ornament\" describes too much decoration, which rules out lucid, terse and plain."],
+      "guide": "Does \"weighed down by needless ornament\" describe prose with too much, or too little?",
+      "explanation": ["\"Although\" sets up a criticism after the praise.", "\"Needless ornament\" means over-decorated writing.", "\"Overwrought\" means overly elaborate, which matches."]
+    },
+    {
+      "id": "w2",
+      "type": "logic",
+      "stem": "Since the new bike lanes opened, accidents involving cyclists downtown have fallen by 30%. The town council concludes that the bike lanes have made cycling downtown safer.\n\nWhich of the following, if true, most weakens the council's conclusion?",
+      "options": [
+        "Bike lanes have become popular in many other cities.",
+        "The number of people cycling downtown fell by half over the same period.",
+        "Some drivers have complained that the lanes slow down traffic.",
+        "Accidents involving only cars also fell slightly over the same period.",
+        "The new lanes are painted a bright, highly visible green."
+      ],
+      "correct": 1,
+      "hint": ["Look for another reason accidents could have fallen, one that has nothing to do with safety.", "Options about popularity, complaints and paint colour don't touch the cause of the drop."],
+      "guide": "Fewer accidents could mean cycling got safer. What else could make the number of accidents go down?",
+      "explanation": ["If half as many people cycle, you'd expect fewer accidents anyway.", "A 30% drop with 50% fewer cyclists means each ride may actually be riskier.", "So the drop doesn't show the lanes made cycling safer."]
+    },
+    {
+      "id": "w3",
+      "type": "reading",
+      "passage": "Researchers long assumed that the honeybee's waggle dance gave hive-mates precise information about the distance to food. Recent experiments, however, show that bees who follow a dance often search over a wide area before finding the food source, and many rely on scent once they are nearby. These findings suggest that the dance gives only an approximate direction and distance, which bees then refine using their other senses.",
+      "stem": "The passage suggests that the waggle dance is best described as",
+      "options": [
+        "the only means bees use to locate food",
+        "a signal used only for food that is very close to the hive",
+        "a behaviour with no communicative purpose",
+        "more precise than researchers once believed",
+        "a rough guide that bees supplement with other cues"
+      ],
+      "correct": 4,
+      "hint": ["The passage says bees \"refine\" the dance's information with other senses, so it can't be the only means.", "The passage says the dance is less precise than assumed, not more."],
+      "guide": "What do the bees do after following the dance, and what does that say about how exact the dance is?",
+      "explanation": ["Bees search a wide area and use scent after following the dance.", "The passage calls the dance's information \"approximate\".", "So it is a rough guide supplemented by other cues."]
+    },
+    {
+      "id": "w4",
+      "type": "blank",
+      "stem": "The scientist's findings were at first dismissed as ______, but later studies confirmed them so thoroughly that they are now considered settled.",
+      "options": ["definitive", "orthodox", "celebrated", "anomalous", "redundant"],
+      "correct": 3,
+      "hint": ["\"Dismissed\" and \"but later... confirmed\" mean the first reaction was doubtful.", "That rules out the positive words definitive, orthodox and celebrated."],
+      "guide": "If people dismissed the findings at first, what did they think was wrong with them?",
+      "explanation": ["The findings were dismissed, then confirmed: a contrast.", "\"Anomalous\" means odd or out of line with expectations.", "That is a reason to dismiss results that later prove right."]
+    },
+    {
+      "id": "p1",
+      "type": "blank",
+      "stem": "Far from being ______, the committee's decision was the product of months of careful deliberation.",
+      "options": ["hasty", "unanimous", "controversial", "deliberate", "popular"],
+      "correct": 0,
+      "hint": ["\"Far from being\" means the blank is the opposite of what follows.", "\"Deliberate\" means the same as careful, so it can't be the opposite."],
+      "guide": "What is the opposite of \"months of careful deliberation\"?",
+      "explanation": ["\"Far from being X\" means the decision was the opposite of X.", "The decision took months of careful thought.", "The opposite of that is \"hasty\"."],
+      "plantedWrong": 2,
+      "plantedWhy": ["\"Far from being\" signals a contrast with how people might see the decision.", "Long, careful deliberation is usually meant to avoid disputes.", "So \"controversial\" is the word the sentence is arguing against."]
+    },
+    {
+      "id": "p2",
+      "type": "logic",
+      "stem": "A company found that employees who attend its optional wellness workshops take fewer sick days than employees who do not. The company concludes that the workshops reduce illness.\n\nThe company's conclusion depends on which of the following assumptions?",
+      "options": [
+        "The workshops are expensive for the company to run.",
+        "Sick days are the only meaningful measure of employee health.",
+        "All employees know that the workshops are available.",
+        "Employees who attend the workshops were not already healthier than those who do not.",
+        "The workshops are held during normal working hours."
+      ],
+      "correct": 3,
+      "hint": ["The workshops are optional, so the people who attend may differ from those who don't.", "Cost and scheduling don't affect whether the workshops cause better health."],
+      "guide": "The workshops are optional. Who might choose to go to a wellness workshop in the first place?",
+      "explanation": ["Attendance is optional, so healthier people might be the ones who sign up.", "If so, they'd take fewer sick days even without the workshops.", "The conclusion only holds if attendees weren't already healthier."],
+      "plantedWrong": 1,
+      "plantedWhy": ["The company measures illness only through sick days.", "If sick days missed other health effects, the conclusion would fall apart.", "So the argument assumes sick days are the only meaningful measure."]
+    },
+    {
+      "id": "p3",
+      "type": "reading",
+      "passage": "In the nineteenth century, many city planners believed that wide boulevards would cure urban disease by improving air circulation. Although the theory behind this belief, that illness spread through \"bad air\", was later disproved, the boulevards did bring real benefits: they made it easier to lay sewer and water pipes beneath them, and these improvements in sanitation sharply reduced disease.",
+      "stem": "Which of the following is best supported by the passage?",
+      "options": [
+        "Nineteenth-century planners correctly understood how disease spread.",
+        "Boulevards improved public health, but not for the reason planners expected.",
+        "Air circulation is the main factor in urban health.",
+        "Sewers were built in cities before boulevards were.",
+        "Wide boulevards increased the spread of disease."
+      ],
+      "correct": 1,
+      "hint": ["The \"bad air\" theory was disproved, so the planners' understanding wasn't correct.", "The passage says disease was reduced, not increased."],
+      "guide": "Did the boulevards reduce disease the way planners thought they would?",
+      "explanation": ["Planners expected better air to cure disease, a theory later disproved.", "Disease still fell, because the boulevards made sewers and water pipes easier to lay.", "So health improved, but for a different reason than expected."],
+      "plantedWrong": 2,
+      "plantedWhy": ["Planners built boulevards specifically to improve air circulation.", "Disease fell sharply after the boulevards were built.", "So the passage supports air circulation as the main factor in urban health."]
+    },
+    {
+      "id": "p4",
+      "type": "blank",
+      "stem": "Her reputation for ______ meant that colleagues trusted her to keep even the most sensitive information to herself.",
+      "options": ["candor", "discretion", "eloquence", "ambition", "spontaneity"],
+      "correct": 1,
+      "hint": ["The key clue is \"keep... information to herself\".", "Eloquence, ambition and spontaneity have nothing to do with keeping secrets."],
+      "guide": "Which quality would make someone good at keeping secrets?",
+      "explanation": ["Colleagues trust her to keep sensitive information private.", "\"Discretion\" means being careful about what you reveal.", "That is exactly the reputation described."],
+      "plantedWrong": 0,
+      "plantedWhy": ["Colleagues trust her with sensitive information.", "\"Candor\" means honesty, and people trust honest colleagues.", "So a reputation for candor fits the sentence."]
+    },
+    {
+      "id": "p5",
+      "type": "logic",
+      "stem": "Every member of the debate club also takes Latin. Some students who take Latin also play chess.\n\nIf both statements are true, which of the following must also be true?",
+      "options": [
+        "Some members of the debate club play chess.",
+        "Every student who takes Latin is in the debate club.",
+        "Any student who does not take Latin is not in the debate club.",
+        "No chess player is in the debate club.",
+        "Every chess player takes Latin."
+      ],
+      "correct": 2,
+      "hint": ["The chess players who take Latin might not be in the debate club at all, so you can't conclude anything about debate members and chess.", "The first statement only goes one way: debate → Latin, not Latin → debate."],
+      "guide": "If every debate member takes Latin, what can you say about someone who doesn't take Latin?",
+      "explanation": ["All debate club members take Latin.", "So anyone who doesn't take Latin can't be a debate member.", "The other options are possible but not guaranteed."],
+      "plantedWrong": 0,
+      "plantedWhy": ["All debate members are part of the Latin group.", "Some of the Latin group play chess.", "So some debate members must be among the chess players."]
+    },
+    {
+      "id": "s1",
+      "type": "blank",
+      "stem": "The documentary was so ______ that even viewers with no interest in geology found themselves captivated.",
+      "options": ["tedious", "technical", "engrossing", "brief", "obscure"],
+      "correct": 2,
+      "hint": ["\"Captivated\" is the clue: the blank must explain why people were hooked."],
+      "guide": "What kind of film captivates people who don't care about its topic?",
+      "explanation": ["Even uninterested viewers were captivated.", "\"Engrossing\" means absorbing all your attention.", "That explains the reaction."]
+    },
+    {
+      "id": "s2",
+      "type": "logic",
+      "stem": "Umbrella sales at a department store rose sharply in March compared with February. The store manager concludes that March must have been rainier than February.\n\nWhich of the following, if true, most weakens the manager's conclusion?",
+      "options": [
+        "The store also sells raincoats and rain boots.",
+        "February has fewer days than March.",
+        "Umbrella sales also rose in March of last year.",
+        "A nearby store reported that March was a busy month.",
+        "In March, the store moved its umbrellas to the entrance and cut their price by half."
+      ],
+      "correct": 4,
+      "hint": ["Look for a different cause of higher sales."],
+      "guide": "Apart from rain, what could make a store sell more umbrellas?",
+      "explanation": ["A better display spot and a 50% price cut would boost sales on their own.", "That gives another reason sales rose, unrelated to rain."]
+    },
+    {
+      "id": "s3",
+      "type": "reading",
+      "passage": "Many people assume that octopuses, being solitary animals, have little capacity to learn from one another. Yet in one experiment, octopuses that watched a trained octopus repeatedly choose a red ball over a white one quickly began choosing the red ball themselves, even without any reward. The finding challenges the idea that learning by observation requires a social lifestyle.",
+      "stem": "The primary purpose of the passage is to",
+      "options": [
+        "describe how octopuses are trained in laboratories",
+        "present evidence that questions a common assumption",
+        "argue that octopuses are social animals",
+        "explain why octopuses prefer the colour red",
+        "compare octopuses with other solitary animals"
+      ],
+      "correct": 1,
+      "hint": ["Notice \"Many people assume...\" followed by \"Yet\"."],
+      "guide": "The passage opens with what \"many people assume\". What does the rest of the passage do to that assumption?",
+      "explanation": ["The passage states a common belief, then gives an experiment that contradicts it.", "Its last sentence says the finding \"challenges\" that idea."]
+    }
+  ]
+}
