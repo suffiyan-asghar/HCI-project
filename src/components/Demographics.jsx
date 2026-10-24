@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import ChoiceGroup from './ChoiceGroup';
+import Segmented from './Segmented';
 
 const QUESTIONS = [
   { key: 'gender', label: 'Gender', options: ['Male', 'Female', 'Prefer not to say'] },
   { key: 'nativeEnglish', label: 'Are you a native English speaker?', options: ['Yes', 'No'] },
   {
     key: 'aiUse',
-    label: 'How often do you use AI chatbots (e.g. ChatGPT, Claude, Gemini)?',
+    label: 'How often do you use AI chatbots like ChatGPT, Claude or Gemini?',
     options: ['Never', 'Monthly or less', 'Weekly', 'Daily'],
   },
   { key: 'greLastYear', label: 'Have you taken the GRE in the past 12 months?', options: ['Yes', 'No'] },
@@ -26,26 +26,35 @@ export default function Demographics({ onComplete }) {
   }
 
   return (
-    <div className="card narrow">
+    <div className="panel narrow">
       <h1>About you</h1>
-      <p className="muted">A few quick questions before we begin.</p>
+      <p className="secondary">A few quick questions before we start.</p>
 
-      <div className="form">
-        <label className="field short">
-          <span>Age</span>
-          <input type="number" inputMode="numeric" min="16" max="99" value={age} onChange={(e) => setAge(e.target.value)} />
+      <div className="field-group">
+        <label className="field-label" htmlFor="age">
+          Age
         </label>
-
-        {QUESTIONS.map((q) => (
-          <ChoiceGroup
-            key={q.key}
-            label={q.label}
-            options={q.options}
-            value={answers[q.key]}
-            onChange={(v) => setAnswers((a) => ({ ...a, [q.key]: v }))}
-          />
-        ))}
+        <input
+          id="age"
+          className="text-input short"
+          type="number"
+          inputMode="numeric"
+          min="16"
+          max="99"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+        />
       </div>
+
+      {QUESTIONS.map((q) => (
+        <Segmented
+          key={q.key}
+          label={q.label}
+          options={q.options}
+          value={answers[q.key]}
+          onChange={(v) => setAnswers((a) => ({ ...a, [q.key]: v }))}
+        />
+      ))}
 
       <div className="actions">
         <button className="btn primary" disabled={!complete} onClick={submit}>

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import ChoiceGroup from './ChoiceGroup';
+import Segmented from './Segmented';
 
 const TLX = [
   { key: 'mental', title: 'Mental demand', q: 'How mentally demanding was the task?', low: 'Very low', high: 'Very high' },
   { key: 'physical', title: 'Physical demand', q: 'How physically demanding was the task?', low: 'Very low', high: 'Very high' },
-  { key: 'temporal', title: 'Temporal demand', q: 'How hurried or rushed was the pace of the task?', low: 'Very low', high: 'Very high' },
-  { key: 'performance', title: 'Performance', q: 'How successful were you in doing what you were asked to do?', low: 'Perfect', high: 'Failure' },
+  { key: 'temporal', title: 'Temporal demand', q: 'How hurried or rushed was the pace?', low: 'Very low', high: 'Very high' },
+  { key: 'performance', title: 'Performance', q: 'How successful were you at what you were asked to do?', low: 'Perfect', high: 'Failure' },
   { key: 'effort', title: 'Effort', q: 'How hard did you have to work to reach your level of performance?', low: 'Very low', high: 'Very high' },
   { key: 'frustration', title: 'Frustration', q: 'How insecure, discouraged, irritated, stressed or annoyed were you?', low: 'Very low', high: 'Very high' },
 ];
@@ -21,7 +21,7 @@ const LIKERT = [
   { key: 'helpedLearn', q: 'StudyBot helped me learn how to solve this kind of question.' },
 ];
 
-const LIKERT_LABELS = ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'];
+const AGREEMENT = ['1', '2', '3', '4', '5'];
 
 export default function Questionnaire({ onComplete }) {
   const [tlx, setTlx] = useState({});
@@ -32,33 +32,37 @@ export default function Questionnaire({ onComplete }) {
   const complete =
     TLX.every((t) => tlx[t.key] !== undefined) && LIKERT.every((l) => likert[l.key] !== undefined) && noticedWrong !== null;
 
+  const setTlxValue = (key) => (e) => setTlx((s) => ({ ...s, [key]: Number(e.target.value) }));
+
   return (
-    <div className="card medium">
-      <p className="eyebrow">Almost done</p>
-      <h1>About the whole session</h1>
+    <div className="panel medium">
+      <p className="kicker">Almost done</p>
+      <h1>Looking back on the session</h1>
 
       <h2>Workload</h2>
-      <p className="muted">Drag or click each scale. Think about the session as a whole.</p>
+      <p className="secondary">Move each slider to where it fits best for the session as a whole.</p>
       <div className="tlx">
         {TLX.map((t) => {
           const touched = tlx[t.key] !== undefined;
+          const value = touched ? tlx[t.key] : 50;
           return (
-            <div key={t.key} className="tlx-item">
-              <div className="tlx-title">
-                <strong>{t.title}</strong> <span className="muted">{t.q}</span>
-              </div>
+            <div key={t.key}>
+              <p className="tlx-question">
+                <strong>{t.title}.</strong> <span className="secondary">{t.q}</span>
+              </p>
               <input
                 type="range"
                 min="0"
                 max="100"
                 step="5"
-                className={touched ? '' : 'untouched'}
-                value={touched ? tlx[t.key] : 50}
+                className={`range ${touched ? '' : 'untouched'}`}
+                style={{ '--val': `${value}%` }}
+                value={value}
                 aria-label={t.title}
-                onChange={(e) => setTlx((s) => ({ ...s, [t.key]: Number(e.target.value) }))}
-                onClick={(e) => setTlx((s) => ({ ...s, [t.key]: Number(e.target.value) }))}
+                onChange={setTlxValue(t.key)}
+                onPointerDown={setTlxValue(t.key)}
               />
-              <div className="scale-labels">
+              <div className="scale-ends">
                 <span>{t.low}</span>
                 <span>{t.high}</span>
               </div>
@@ -68,48 +72,36 @@ export default function Questionnaire({ onComplete }) {
       </div>
 
       <h2>StudyBot</h2>
-      <div className="likert" role="table" aria-label="Statements about StudyBot">
-        <div className="likert-row likert-head" role="row">
-          <span role="columnheader" />
-          {LIKERT_LABELS.map((l) => (
-            <span key={l} role="columnheader">
-              {l}
-            </span>
-          ))}
+      <p className="secondary">How much do you agree with each statement? 1 is strongly disagree, 5 is strongly agree.</p>
+      {LIKERT.map((item) => (
+        <div key={item.key} className="statement">
+          <Segmented
+            label={item.q}
+            options={AGREEMENT}
+            value={likert[item.key] ? String(likert[item.key]) : undefined}
+            onChange={(v) => setLikert((s) => ({ ...s, [item.key]: Number(v) }))}
+            ends={['Strongly disagree', 'Strongly agree']}
+          />
         </div>
-        {LIKERT.map((item) => (
-          <div key={item.key} className="likert-row" role="row">
-            <span role="rowheader">{item.q}</span>
-            {LIKERT_LABELS.map((label, i) => (
-              <label key={label} className="likert-cell" role="cell">
-                <input
-                  type="radio"
-                  name={item.key}
-                  checked={likert[item.key] === i + 1}
-                  onChange={() => setLikert((s) => ({ ...s, [item.key]: i + 1 }))}
-                  aria-label={`${item.q} ${label}`}
-                />
-                <span className="likert-mobile-label">{label}</span>
-              </label>
-            ))}
-          </div>
-        ))}
-      </div>
+      ))}
 
-      <ChoiceGroup
-        label="Did you notice any StudyBot answers that seemed wrong?"
+      <h2>One last thing</h2>
+      <Segmented
+        label="Did any of StudyBot's answers seem wrong to you?"
         options={['Yes', 'No', 'Not sure']}
         value={noticedWrong}
         onChange={setNoticedWrong}
       />
 
-      <label className="field">
-        <span>Anything else you'd like to tell us? (optional)</span>
-        <textarea rows="3" value={comments} onChange={(e) => setComments(e.target.value)} />
-      </label>
+      <div className="field-group">
+        <label className="field-label" htmlFor="comments">
+          Anything else you'd like to tell us? <span className="secondary">Optional</span>
+        </label>
+        <textarea id="comments" className="text-input" rows="3" value={comments} onChange={(e) => setComments(e.target.value)} />
+      </div>
 
       <div className="actions">
-        {!complete && <span className="muted tiny">Please answer every item above.</span>}
+        {!complete && <span className="footnote">Answer every item to continue.</span>}
         <button className="btn primary" disabled={!complete} onClick={() => onComplete({ tlx, likert, noticedWrong, comments })}>
           Continue
         </button>

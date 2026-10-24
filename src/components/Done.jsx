@@ -4,25 +4,26 @@ export default function Done({ session, onReset }) {
   const excluded = session.status === 'excluded';
 
   return (
-    <div className="card narrow center">
-      <div className="big-emoji" aria-hidden="true">
-        {excluded ? '🙏' : '🎉'}
-      </div>
-      <h1>{excluded ? 'Thank you for your interest' : 'All done. Thank you!'}</h1>
-      <p>
+    <div className="panel narrow center">
+      <svg className={`done-mark ${excluded ? 'neutral' : ''}`} viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="32" />
+        <path d="M19 33l9 9 17-19" />
+      </svg>
+      <h1>{excluded ? 'Thanks for your interest' : 'All done. Thank you.'}</h1>
+      <p className="secondary">
         {excluded
-          ? "This study is for people who haven't taken the GRE in the past year, so we won't need you for the rest of it."
+          ? "This study is for people who haven't taken the GRE in the past year, so we won't need you for the rest."
           : 'Your responses have been saved.'}
       </p>
-      <p className="muted">Please let the researcher know you have finished.</p>
+      <p>Please let the researcher know you've finished.</p>
 
-      <div className="researcher-footer">
-        <span>Researcher: {session.participantId}</span>
+      <div className="researcher-bar">
+        <span>Researcher · {session.participantId}</span>
         <span>
-          <button className="btn link" onClick={() => downloadJson(`studybot-${session.participantId}.json`, session)}>
-            Download this session
+          <button className="btn plain" onClick={() => downloadJson(`studybot-${session.participantId}.json`, session)}>
+            Download session
           </button>
-          <button className="btn link" onClick={onReset}>
+          <button className="btn plain" onClick={onReset}>
             Next participant
           </button>
         </span>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getQuestion, LETTERS, sectionLabel } from '../lib/session';
 import TutorPanel, { emptyChat } from './TutorPanel';
+import { CheckIcon } from './icons';
 
 export default function QuestionScreen({ session, step, log, onComplete }) {
   const question = getQuestion(step.qid);
@@ -47,29 +48,23 @@ export default function QuestionScreen({ session, step, log, onComplete }) {
 
   return (
     <div className={`question-layout ${step.ai ? 'with-tutor' : ''}`}>
-      <section className="card question-card">
+      <section className="panel">
         <div className="question-meta">
-          <span className="eyebrow">{sectionLabel(step)}</span>
-          <span className="muted">
-            Question {step.index + 1} of {step.total}
+          <p className="kicker">{sectionLabel(step)}</p>
+          <span className="question-count">
+            {step.index + 1} of {step.total}
           </span>
         </div>
 
         {question.passage && <blockquote className="passage">{question.passage}</blockquote>}
         <p className="stem">{question.stem}</p>
 
-        <div className="options" role="radiogroup" aria-label="Answer options">
+        <div className="option-list" role="radiogroup" aria-label="Answer options">
           {question.options.map((opt, i) => (
-            <button
-              key={i}
-              type="button"
-              role="radio"
-              aria-checked={selected === i}
-              className={`option ${selected === i ? 'selected' : ''}`}
-              onClick={() => choose(i)}
-            >
+            <button key={i} type="button" role="radio" aria-checked={selected === i} className="option-row" onClick={() => choose(i)}>
               <span className="option-letter">{LETTERS[i]}</span>
-              <span>{opt}</span>
+              <span className="option-text">{opt}</span>
+              <CheckIcon className="option-check" />
             </button>
           ))}
         </div>

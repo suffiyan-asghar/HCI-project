@@ -1,27 +1,39 @@
 import { useState } from 'react';
 
+const FACTS = [
+  ['Time', 'About 30 minutes'],
+  ['What you do', 'Answer 28 GRE-style verbal questions. On some, an AI tutor called StudyBot can help.'],
+  ['Privacy', 'Answers are stored under a participant ID. We never record your name.'],
+  ['Your choice', 'Taking part is voluntary. You can stop at any time by telling the researcher.'],
+];
+
 export default function Consent({ onComplete }) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="card narrow">
-      <h1>Welcome to the StudyBot study</h1>
-      <p>
-        We are studying how students work with an AI tutor on verbal reasoning questions. This is part of a
+    <div className="panel narrow">
+      <h1>Before you begin</h1>
+      <p className="secondary">
+        We're studying how students work with an AI tutor on verbal reasoning questions, as part of a
         Human-Computer Interaction course project.
       </p>
-      <ul className="plain-list">
-        <li>⏱️ It takes about <strong>30 minutes</strong>.</li>
-        <li>📝 You will answer 28 GRE-style questions. On some of them, an AI tutor called StudyBot can help you.</li>
-        <li>🔒 Your answers are stored under a participant ID only. We do not record your name.</li>
-        <li>✋ Taking part is voluntary. You can stop at any time without giving a reason. Just tell the researcher.</li>
-        <li>💬 Some details of the study will be explained at the end.</li>
-      </ul>
 
-      <label className="check">
-        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-        <span>I have read the information above and agree to take part.</span>
-      </label>
+      <div className="group">
+        {FACTS.map(([label, value]) => (
+          <div key={label} className="row stacked">
+            <span className="row-label">{label}</span>
+            <span className="row-value">{value}</span>
+          </div>
+        ))}
+      </div>
+      <p className="footnote">Some details of the study are explained at the end.</p>
+
+      <div className="group">
+        <label className="row check-row">
+          <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+          <span>I've read this and agree to take part.</span>
+        </label>
+      </div>
 
       <div className="actions">
         <button className="btn primary" disabled={!agreed} onClick={() => onComplete({ consent: true, at: new Date().toISOString() })}>

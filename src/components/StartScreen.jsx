@@ -30,38 +30,42 @@ export default function StartScreen({ onStart }) {
   }
 
   return (
-    <div className="card narrow">
-      <p className="eyebrow">Researcher setup</p>
-      <h1>Start a new session</h1>
-      <p className="muted">Fill this in, then hand the laptop to the participant.</p>
+    <div className="panel narrow">
+      <p className="kicker">Researcher</p>
+      <h1>New session</h1>
+      <p className="secondary">Set this up, then hand the laptop to the participant.</p>
 
-      <form onSubmit={start} className="form">
-        <label className="field">
-          <span>Participant ID</span>
-          <input value={participantId} onChange={(e) => setParticipantId(e.target.value)} required />
-          {idTaken && <span className="warn">This ID already has saved data on this laptop.</span>}
-        </label>
+      <form onSubmit={start}>
+        <div className="group">
+          <label className="row">
+            <span className="row-label">Participant ID</span>
+            <input value={participantId} onChange={(e) => setParticipantId(e.target.value)} required spellCheck="false" />
+          </label>
+          <label className="row">
+            <span className="row-label">Group</span>
+            <select value={groupChoice} onChange={(e) => setGroupChoice(e.target.value)}>
+              <option value="auto">Auto-assign</option>
+              <option value="standard">Standard</option>
+              <option value="adaptive">Adaptive</option>
+            </select>
+          </label>
+        </div>
+        {idTaken && <p className="warn">This ID already has saved data on this laptop.</p>}
+        <p className="footnote">Auto-assign alternates groups so they stay balanced.</p>
 
-        <label className="field">
-          <span>Group</span>
-          <select value={groupChoice} onChange={(e) => setGroupChoice(e.target.value)}>
-            <option value="auto">Auto-assign (alternates, keeps groups balanced)</option>
-            <option value="standard">Standard tutor</option>
-            <option value="adaptive">Adaptive tutor</option>
-          </select>
-        </label>
-
-        <button className="btn primary" type="submit" disabled={!participantId.trim()}>
-          Start session
-        </button>
+        <div className="actions">
+          <button className="btn primary" type="submit" disabled={!participantId.trim()}>
+            Start session
+          </button>
+        </div>
       </form>
 
-      <div className="researcher-footer">
+      <div className="researcher-bar">
         <span>
-          {completed.length} session{completed.length === 1 ? '' : 's'} saved on this laptop
+          {completed.length} session{completed.length === 1 ? '' : 's'} saved on this laptop · Ctrl+Shift+X ends a session
         </span>
         <button
-          className="btn link"
+          className="btn plain"
           type="button"
           disabled={completed.length === 0}
           onClick={() => downloadJson(`studybot-sessions-${Date.now()}.json`, completed)}
@@ -69,7 +73,6 @@ export default function StartScreen({ onStart }) {
           Download data
         </button>
       </div>
-      <p className="tiny muted">During a session, press Ctrl+Shift+X to end it and return here.</p>
     </div>
   );
 }

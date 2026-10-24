@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { firstLevel, givesAnswer, nextLevel } from '../tutor/policy';
 import { getTutorReply } from '../tutor';
 import RichText from './RichText';
+import { ArrowUpIcon } from './icons';
 
 export const emptyChat = {
   messages: [],
@@ -75,10 +76,12 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
   return (
     <aside className="tutor" aria-label="StudyBot AI tutor">
       <div className="tutor-header">
-        <span className="tutor-avatar" aria-hidden="true">🤖</span>
-        <div>
-          <div className="tutor-name">StudyBot</div>
-          <div className="tutor-sub">AI tutor</div>
+        <span className="tutor-avatar" aria-hidden="true">
+          SB
+        </span>
+        <div className="tutor-name">
+          StudyBot
+          <span>AI tutor</span>
         </div>
       </div>
 
@@ -102,15 +105,17 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
 
       {locked ? (
         <div className="tutor-gate">
-          <p className="gate-title">🧠 Make your best guess first</p>
-          <p className="muted">Pick an answer on the left. Then you can ask StudyBot for help.</p>
-          <button className="btn secondary" onClick={noIdea}>
+          <p className="secondary">
+            <strong>Make your best guess first.</strong>
+            Choose an answer, then you can ask StudyBot for help.
+          </p>
+          <button className="btn tinted" onClick={noIdea}>
             I have no idea yet
           </button>
         </div>
       ) : (
-        <div className="tutor-input">
-          <button className="chip" disabled={chat.pending} onClick={() => send(quickReply)}>
+        <div className="tutor-footer">
+          <button className="suggestion" disabled={chat.pending} onClick={() => send(quickReply)}>
             {quickReply}
           </button>
           <form
@@ -120,14 +125,9 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
               send(draft);
             }}
           >
-            <input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder="Type a message…"
-              aria-label="Message StudyBot"
-            />
-            <button className="btn primary" type="submit" disabled={!draft.trim() || chat.pending}>
-              Send
+            <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Message StudyBot" aria-label="Message StudyBot" />
+            <button className="send" type="submit" aria-label="Send" disabled={!draft.trim() || chat.pending}>
+              <ArrowUpIcon />
             </button>
           </form>
         </div>

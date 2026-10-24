@@ -101,7 +101,9 @@ export default function App() {
 
   return (
     <Shell progress={showProgress ? questionProgress(session) : null}>
-      <Screen key={session.stepIndex} session={session} step={step} log={log} onComplete={complete} onReset={reset} />
+      <div className="screen" key={session.stepIndex}>
+        <Screen session={session} step={step} log={log} onComplete={complete} onReset={reset} />
+      </div>
     </Shell>
   );
 }
@@ -110,19 +112,19 @@ function Shell({ progress, children }) {
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">
-          <span className="brand-mark" aria-hidden="true">📘</span> StudyBot
-        </div>
-        {progress && (
-          <div className="progress" aria-label={`Question ${progress.done} of ${progress.total} done`}>
-            <div className="progress-track">
-              <div className="progress-fill" style={{ width: `${(progress.done / progress.total) * 100}%` }} />
+        <div className="topbar-inner">
+          <span className="wordmark">StudyBot</span>
+          {progress && (
+            <div className="progress" aria-label={`${progress.done} of ${progress.total} questions done`}>
+              <span className="progress-text">
+                {progress.done} of {progress.total}
+              </span>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ transform: `scaleX(${progress.done / progress.total})` }} />
+              </div>
             </div>
-            <span className="progress-text">
-              {progress.done} / {progress.total}
-            </span>
-          </div>
-        )}
+          )}
+        </div>
       </header>
       <main className="main">{children}</main>
     </div>
