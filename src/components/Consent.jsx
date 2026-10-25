@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 const FACTS = [
-  ['Time', 'About 30 minutes'],
-  ['What you do', 'Answer 28 GRE-style verbal questions. On some, an AI tutor called StudyBot can help.'],
+  ['Time', 'About 35 minutes'],
+  ['What you do', 'Answer GRE-style verbal questions. Depending on your group, an AI tutor called StudyBot may help on some of them.'],
   ['Privacy', 'Answers are stored under a participant ID. We never record your name.'],
   ['Your choice', 'Taking part is voluntary. You can stop at any time by telling the researcher.'],
 ];

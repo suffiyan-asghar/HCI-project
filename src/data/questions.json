@@ -1,11 +1,13 @@
 {
-  "note": "SAMPLE BANK for building the frontend. Blocks B and C reuse block A until the full 44-question bank is written (build step 2).",
+  "note": "DRAFT BANK, to be proofread by the team: 28 main questions, 3 transfer questions (final retention check only) and 16 spares that can replace any question that turns out unclear. Every practice question and spare has planted fields because any practice position can be a wrong-answer check; plantedHint and plantedGuide stay neutral between the correct and the planted option. docs/QUESTION_SHEET.md shows all of them in readable form.",
   "warmup": ["w1", "w2", "w3", "w4"],
   "blocks": {
     "A": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] },
-    "B": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] },
-    "C": { "practice": ["p1", "p2", "p3", "p4", "p5"], "solo": ["s1", "s2", "s3"] }
+    "B": { "practice": ["p6", "p7", "p8", "p9", "p10"], "solo": ["s4", "s5", "s6"] },
+    "C": { "practice": ["p11", "p12", "p13", "p14", "p15"], "solo": ["s7", "s8", "s9"] }
   },
+  "transfer": ["t1", "t2", "t3"],
+  "spares": ["x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16"],
   "questions": [
     {
       "id": "w1",
@@ -70,7 +72,9 @@
       "guide": "What is the opposite of \"months of careful deliberation\"?",
       "explanation": ["\"Far from being X\" means the decision was the opposite of X.", "The decision took months of careful thought.", "The opposite of that is \"hasty\"."],
       "plantedWrong": 2,
-      "plantedWhy": ["\"Far from being\" signals a contrast with how people might see the decision.", "Long, careful deliberation is usually meant to avoid disputes.", "So \"controversial\" is the word the sentence is arguing against."]
+      "plantedWhy": ["\"Far from being\" signals a contrast with how people might see the decision.", "Long, careful deliberation is usually meant to avoid disputes.", "So \"controversial\" is the word the sentence is arguing against."],
+      "plantedHint": ["\"Far from being\" means the blank describes the opposite of how the decision was actually made.", "\"Deliberate\" describes the decision as it was, so it can't be the blank."],
+      "plantedGuide": "What does \"far from being\" tell you about the word in the blank?"
     },
     {
       "id": "p2",
@@ -88,7 +92,9 @@
       "guide": "The workshops are optional. Who might choose to go to a wellness workshop in the first place?",
       "explanation": ["Attendance is optional, so healthier people might be the ones who sign up.", "If so, they'd take fewer sick days even without the workshops.", "The conclusion only holds if attendees weren't already healthier."],
       "plantedWrong": 1,
-      "plantedWhy": ["The company measures illness only through sick days.", "If sick days missed other health effects, the conclusion would fall apart.", "So the argument assumes sick days are the only meaningful measure."]
+      "plantedWhy": ["The company measures illness only through sick days.", "If sick days missed other health effects, the conclusion would fall apart.", "So the argument assumes sick days are the only meaningful measure."],
+      "plantedHint": ["Look for something the conclusion takes for granted about how illness is measured or who attends.", "Cost and scheduling don't affect whether the workshops reduce illness."],
+      "plantedGuide": "What does the company have to take for granted to get from fewer sick days to less illness?"
     },
     {
       "id": "p3",
@@ -107,7 +113,9 @@
       "guide": "Did the boulevards reduce disease the way planners thought they would?",
       "explanation": ["Planners expected better air to cure disease, a theory later disproved.", "Disease still fell, because the boulevards made sewers and water pipes easier to lay.", "So health improved, but for a different reason than expected."],
       "plantedWrong": 2,
-      "plantedWhy": ["Planners built boulevards specifically to improve air circulation.", "Disease fell sharply after the boulevards were built.", "So the passage supports air circulation as the main factor in urban health."]
+      "plantedWhy": ["Planners built boulevards specifically to improve air circulation.", "Disease fell sharply after the boulevards were built.", "So the passage supports air circulation as the main factor in urban health."],
+      "plantedHint": ["Disease fell after the boulevards were built, so they didn't increase it.", "The passage never says whether sewers came before or after the boulevards."],
+      "plantedGuide": "What happened to disease after the boulevards were built?"
     },
     {
       "id": "p4",
@@ -119,7 +127,9 @@
       "guide": "Which quality would make someone good at keeping secrets?",
       "explanation": ["Colleagues trust her to keep sensitive information private.", "\"Discretion\" means being careful about what you reveal.", "That is exactly the reputation described."],
       "plantedWrong": 0,
-      "plantedWhy": ["Colleagues trust her with sensitive information.", "\"Candor\" means honesty, and people trust honest colleagues.", "So a reputation for candor fits the sentence."]
+      "plantedWhy": ["Colleagues trust her with sensitive information.", "\"Candor\" means honesty, and people trust honest colleagues.", "So a reputation for candor fits the sentence."],
+      "plantedHint": ["Colleagues trust her with sensitive information.", "Eloquence, ambition and spontaneity have nothing to do with being trusted."],
+      "plantedGuide": "Which quality would make colleagues trust someone with sensitive information?"
     },
     {
       "id": "p5",
@@ -137,7 +147,9 @@
       "guide": "If every debate member takes Latin, what can you say about someone who doesn't take Latin?",
       "explanation": ["All debate club members take Latin.", "So anyone who doesn't take Latin can't be a debate member.", "The other options are possible but not guaranteed."],
       "plantedWrong": 0,
-      "plantedWhy": ["All debate members are part of the Latin group.", "Some of the Latin group play chess.", "So some debate members must be among the chess players."]
+      "plantedWhy": ["All debate members are part of the Latin group.", "Some of the Latin group play chess.", "So some debate members must be among the chess players."],
+      "plantedHint": ["The first statement only goes one way: debate → Latin, not Latin → debate.", "Nothing says that no chess player is in the club, or that every chess player takes Latin."],
+      "plantedGuide": "Picture debate club, Latin and chess as three circles. How might they overlap?"
     },
     {
       "id": "s1",
@@ -181,6 +193,595 @@
       "hint": ["Notice \"Many people assume...\" followed by \"Yet\"."],
       "guide": "The passage opens with what \"many people assume\". What does the rest of the passage do to that assumption?",
       "explanation": ["The passage states a common belief, then gives an experiment that contradicts it.", "Its last sentence says the finding \"challenges\" that idea."]
+    },
+    {
+      "id": "p6",
+      "type": "blank",
+      "stem": "The senator's argument was so ______ that even her longtime opponents conceded that its logic was hard to fault.",
+      "options": ["cogent", "lengthy", "partisan", "impassioned", "tentative"],
+      "correct": 0,
+      "hint": ["\"Its logic was hard to fault\" points to the quality of the reasoning.", "Lengthy, partisan and tentative don't describe reasoning that wins over opponents."],
+      "guide": "What quality would make an argument's logic hard to fault?",
+      "explanation": ["Opponents conceded that the logic was hard to fault.", "\"Cogent\" means clear, logical and convincing.", "That is exactly the quality described."],
+      "plantedWrong": 3,
+      "plantedWhy": ["Even her longtime opponents were won over.", "An impassioned argument is delivered with strong feeling, which is what moves a hostile audience.", "So \"impassioned\" fits the sentence."],
+      "plantedHint": ["\"Even her longtime opponents conceded\" means the argument won over a hostile audience.", "Lengthy, partisan and tentative arguments wouldn't win over opponents."],
+      "plantedGuide": "What kind of argument could win over people who usually disagree with you?"
+    },
+    {
+      "id": "p7",
+      "type": "logic",
+      "stem": "After the city installed brighter streetlights on Elm Street, reported burglaries on Elm Street fell by 40% the following year. The city concludes that brighter streetlights deter burglars.\n\nWhich of the following, if true, most strengthens the city's conclusion?",
+      "options": [
+        "Residents of Elm Street generally approve of the new lights.",
+        "The new streetlights use less electricity than the old ones.",
+        "Some burglaries in the city take place during the day.",
+        "Over the same year, burglaries on similar nearby streets without new lights did not fall.",
+        "Before the new lights, Elm Street had more burglaries than any other street in the city."
+      ],
+      "correct": 3,
+      "hint": ["To show the lights caused the drop, rule out other explanations, such as burglaries falling everywhere.", "Approval, electricity use and daytime burglaries don't show whether the lights caused the drop."],
+      "guide": "If burglaries had fallen all over the city that year, would the Elm Street drop still show that the lights worked?",
+      "explanation": ["The conclusion assumes the lights caused the drop.", "If similar streets without new lights saw no drop, other causes become less likely.", "That makes the lights the best explanation."],
+      "plantedWrong": 4,
+      "plantedWhy": ["The lights were installed where burglary was the biggest problem.", "A large drop on the city's worst street shows the lights work where they are needed most.", "So this strengthens the conclusion."],
+      "plantedHint": ["Look for the option that connects the drop in burglaries to the lights themselves.", "Approval, electricity use and daytime burglaries don't tell you whether the lights caused the drop."],
+      "plantedGuide": "What kind of information would tell you whether the lights, and not something else, caused the drop?"
+    },
+    {
+      "id": "p8",
+      "type": "reading",
+      "passage": "For decades, historians described the medieval period as an age of scientific stagnation. More recent scholarship has complicated this picture. Medieval scholars refined the study of optics, built increasingly accurate mechanical clocks, and preserved and extended mathematical works from the ancient world. While these advances were uneven and often slow to spread, they laid groundwork that later scientists built upon.",
+      "stem": "The author's attitude toward the view that the medieval period was an age of scientific stagnation is best described as",
+      "options": [
+        "strong agreement",
+        "qualified disagreement",
+        "neutral detachment",
+        "outright rejection",
+        "amused ridicule"
+      ],
+      "correct": 1,
+      "hint": ["The author gives evidence against the old view, so it isn't agreement or detachment.", "\"Uneven and often slow to spread\" shows the author also concedes something."],
+      "guide": "Does the author completely dismiss the old view, or admit it has some truth?",
+      "explanation": ["The author argues against the stagnation view with examples.", "But \"uneven and often slow to spread\" concedes some limits.", "Disagreement with a concession is qualified disagreement."],
+      "plantedWrong": 3,
+      "plantedWhy": ["The author lists achievements in optics, clocks and mathematics.", "These directly contradict the idea of stagnation.", "So the author rejects the old view outright."],
+      "plantedHint": ["The author gives evidence against the old view, so it isn't agreement or detachment.", "Nothing in the passage mocks the old view."],
+      "plantedGuide": "How does the author respond to the old view: with evidence, with jokes, or not at all?"
+    },
+    {
+      "id": "p9",
+      "type": "blank",
+      "stem": "Initially ______ about the new scheduling software, the staff became enthusiastic users once they saw how much time it saved.",
+      "options": ["skeptical", "ecstatic", "knowledgeable", "curious", "voluble"],
+      "correct": 0,
+      "hint": ["\"Initially ... became enthusiastic\" signals a change, so the blank is close to the opposite of enthusiastic.", "Ecstatic is already enthusiastic, and knowledgeable and voluble don't describe an attitude toward the software."],
+      "guide": "The staff changed their minds. What was their attitude before they saw the time savings?",
+      "explanation": ["\"Initially\" and \"became\" signal a change of attitude.", "Before seeing proof, the staff doubted the software.", "\"Skeptical\" means doubtful."],
+      "plantedWrong": 3,
+      "plantedWhy": ["The staff tried the software and then became users.", "Curiosity is what makes people try something new.", "So they were initially curious about it."],
+      "plantedHint": ["Ecstatic would mean they were already enthusiastic, so nothing would have changed.", "Knowledgeable and voluble don't describe an attitude toward the software."],
+      "plantedGuide": "How might people feel about new software before they have tried it?"
+    },
+    {
+      "id": "p10",
+      "type": "logic",
+      "stem": "All of the paintings in the museum's east gallery were painted before 1900. None of the paintings by Mira Holt were painted before 1900.\n\nIf both statements are true, which of the following must also be true?",
+      "options": [
+        "Some paintings by Mira Holt are in the east gallery.",
+        "The east gallery contains paintings by many different artists.",
+        "All paintings painted before 1900 are in the east gallery.",
+        "Mira Holt painted only after 1950.",
+        "None of the paintings in the east gallery are by Mira Holt."
+      ],
+      "correct": 4,
+      "hint": ["Holt's paintings are all from 1900 or later, but every east-gallery painting is older.", "\"All east-gallery paintings are pre-1900\" doesn't mean all pre-1900 paintings are in the east gallery."],
+      "guide": "Could a painting by Mira Holt meet the rule for being in the east gallery?",
+      "explanation": ["Every east-gallery painting is from before 1900.", "No Holt painting is from before 1900.", "So no Holt painting can be in the east gallery."],
+      "plantedWrong": 2,
+      "plantedWhy": ["Every painting in the east gallery is from before 1900.", "So the east gallery is where the pre-1900 paintings are kept.", "That means all paintings from before 1900 are in the east gallery."],
+      "plantedHint": ["Nothing says when after 1900 Holt painted, or how many artists the gallery holds.", "Holt paintings in the east gallery would contradict the two statements."],
+      "plantedGuide": "Which options follow only from the two statements, without adding anything?"
+    },
+    {
+      "id": "s4",
+      "type": "blank",
+      "stem": "Critics called the director's latest film ______, noting that it borrowed its plot, its characters and even several scenes from earlier movies.",
+      "options": ["original", "derivative", "ambitious", "controversial", "profitable"],
+      "correct": 1,
+      "hint": ["The clue is \"borrowed its plot, its characters and even several scenes\"."],
+      "guide": "What do you call a work that copies most of its material from earlier works?",
+      "explanation": ["The film borrowed heavily from earlier movies.", "\"Derivative\" means copied or imitative."]
+    },
+    {
+      "id": "s5",
+      "type": "logic",
+      "stem": "After a school switched to a four-day week, student attendance rose. The principal concludes that students prefer the shorter week.\n\nWhich of the following, if true, most weakens the principal's conclusion?",
+      "options": [
+        "Teachers also reported higher job satisfaction.",
+        "Several other schools are considering a four-day week.",
+        "At the same time, the school began fining families for unexcused absences.",
+        "Each school day was made slightly longer.",
+        "Most students said they enjoy having Fridays off."
+      ],
+      "correct": 2,
+      "hint": ["Look for another reason attendance could have gone up."],
+      "guide": "Apart from liking the new schedule, what else could make students attend more?",
+      "explanation": ["Fines for absences would raise attendance on their own.", "So higher attendance doesn't show that students prefer the shorter week."]
+    },
+    {
+      "id": "s6",
+      "type": "reading",
+      "passage": "Coral reefs cover less than one percent of the ocean floor, yet they support roughly a quarter of all known marine species. This imbalance has led some biologists to compare reefs to rainforests. The comparison is apt in another way as well: like rainforests, reefs are being lost faster than scientists can fully catalogue the life they contain.",
+      "stem": "According to the passage, coral reefs resemble rainforests in that both",
+      "options": [
+        "cover large parts of the Earth's surface",
+        "are found mainly in warm climates",
+        "have been fully catalogued by scientists",
+        "support many species and are disappearing before they are fully studied",
+        "are recovering from earlier damage"
+      ],
+      "correct": 3,
+      "hint": ["The passage gives two ways reefs are like rainforests."],
+      "guide": "What two things does the passage say reefs and rainforests have in common?",
+      "explanation": ["Reefs support a huge share of species, like rainforests.", "Both are being lost faster than scientists can catalogue them."]
+    },
+    {
+      "id": "p11",
+      "type": "blank",
+      "stem": "Despite his ______ manner in meetings, the manager was known to be generous and kind once you got to know him.",
+      "options": ["brusque", "affable", "generous", "cautious", "punctual"],
+      "correct": 0,
+      "hint": ["\"Despite\" means the blank contrasts with \"generous and kind\".", "Affable and generous agree with \"generous and kind\", so they can't be right."],
+      "guide": "What's the opposite of being generous and kind in how you treat people?",
+      "explanation": ["\"Despite\" signals a contrast with generous and kind.", "\"Brusque\" means abrupt and blunt in manner.", "That gives the opposite first impression."],
+      "plantedWrong": 3,
+      "plantedWhy": ["\"Despite\" sets up a contrast with being generous and kind.", "A cautious manager holds back in meetings and keeps people at a distance.", "So \"cautious\" provides the contrast."],
+      "plantedHint": ["\"Despite\" means the blank contrasts with what follows.", "Affable and generous agree with \"generous and kind\", and punctual says nothing about his manner."],
+      "plantedGuide": "What kind of manner in meetings might hide a generous personality?"
+    },
+    {
+      "id": "p12",
+      "type": "logic",
+      "stem": "Students who eat breakfast score higher on morning tests than students who skip it. Therefore, if the school provided a free breakfast to every student, average morning test scores would rise.\n\nThe argument assumes which of the following?",
+      "options": [
+        "Most students would prefer a hot breakfast to a cold one.",
+        "Students who skip breakfast do so because they cannot afford it.",
+        "Eating breakfast itself, rather than something linked with it, is what raises scores.",
+        "Morning tests are harder than afternoon tests.",
+        "The school can afford to provide a free breakfast."
+      ],
+      "correct": 2,
+      "hint": ["The evidence is only a correlation: breakfast-eaters score higher.", "Food preferences, test difficulty and the school budget don't affect whether breakfast causes higher scores."],
+      "guide": "Could students who eat breakfast differ in other ways that also affect their scores?",
+      "explanation": ["Breakfast-eaters might differ in other ways, such as sleep or home routines.", "The prediction only works if breakfast itself causes the higher scores.", "So the argument assumes the link is causal."],
+      "plantedWrong": 1,
+      "plantedWhy": ["A free breakfast only changes anything if cost is what stops students eating.", "If students skipped for other reasons, free food wouldn't help.", "So the argument assumes they skip breakfast because they can't afford it."],
+      "plantedHint": ["Ask what must be true for a free breakfast to actually change scores.", "Food preferences, test difficulty and the school budget don't affect that."],
+      "plantedGuide": "What would have to be true for a free breakfast to change anyone's score?"
+    },
+    {
+      "id": "p13",
+      "type": "reading",
+      "passage": "When the printing press arrived in Europe, some scholars worried that cheap books would weaken memory, since people would no longer need to memorize long texts. Their fear was not entirely unfounded: the art of memorizing whole works did decline. Yet the press also made knowledge far more widely available, and the number of people who could read grew enormously. On balance, most historians judge the trade to have been worthwhile.",
+      "stem": "The author mentions the decline in memorizing whole works primarily to",
+      "options": [
+        "explain why historians disagree about the printing press",
+        "prove that the printing press harmed European culture",
+        "argue that memorization is more valuable than reading",
+        "acknowledge that an early concern had some basis",
+        "show that scholars opposed the printing press for religious reasons"
+      ],
+      "correct": 3,
+      "hint": ["The author concludes the trade was worthwhile, so the point isn't that the press was harmful overall.", "Religion, and memorization being more valuable than reading, are never discussed."],
+      "guide": "Right after saying the fear was \"not entirely unfounded\", what does the author say next?",
+      "explanation": ["\"Not entirely unfounded\" admits the scholars' worry had some truth.", "The author then turns with \"Yet\" to the benefits.", "So the detail acknowledges a partly valid concern."],
+      "plantedWrong": 1,
+      "plantedWhy": ["The passage confirms that the art of memorizing whole works declined.", "That decline is a real cultural loss caused by the press.", "So the author mentions it to prove the press caused harm."],
+      "plantedHint": ["The passage never mentions religion or compares memorization with reading.", "It says most historians agree, so it isn't about disagreement."],
+      "plantedGuide": "What does the decline in memorization show about the scholars' worry?"
+    },
+    {
+      "id": "p14",
+      "type": "blank",
+      "stem": "The new evidence did not ______ the theory; on the contrary, it made the theory more convincing than ever.",
+      "options": ["undermine", "support", "inspire", "clarify", "illustrate"],
+      "correct": 0,
+      "hint": ["\"On the contrary\" means the blank is the opposite of \"made more convincing\".", "Support and illustrate would make a theory more convincing, so they can't be the opposite."],
+      "guide": "What would new evidence do to a theory if it made the theory less convincing?",
+      "explanation": ["\"On the contrary\" means the second half is the opposite of the first.", "The opposite of making a theory more convincing is weakening it.", "\"Undermine\" means weaken."],
+      "plantedWrong": 3,
+      "plantedWhy": ["Read the sentence as \"the evidence did not just ___ the theory; it went further\".", "Clarifying a theory only makes it easier to understand, not more convincing.", "So the evidence went beyond clarifying it, and \"clarify\" fits the blank."],
+      "plantedHint": ["\"On the contrary\" tells you the second half corrects the first.", "Support and illustrate mean much the same as \"made more convincing\"."],
+      "plantedGuide": "What does \"on the contrary\" tell you about the two halves of the sentence?"
+    },
+    {
+      "id": "p15",
+      "type": "logic",
+      "stem": "In a survey of a town's residents, every resident who owns a dog also owns a leash. Some residents who own a leash do not own a dog.\n\nIf both statements are true, which of the following must also be true?",
+      "options": [
+        "Every resident who owns a leash owns a dog.",
+        "More residents own a leash than own a dog.",
+        "Most leash owners own a dog.",
+        "Some dog owners do not own a leash.",
+        "No resident owns a cat."
+      ],
+      "correct": 1,
+      "hint": ["Every dog owner is counted among the leash owners, plus some extra people without dogs.", "\"Some\" can mean a few or very many, so you can't conclude \"most\"."],
+      "guide": "If every dog owner is in the leash group, and the leash group has some extra people too, which group is bigger?",
+      "explanation": ["Every dog owner is also a leash owner.", "The leash group also includes some people without dogs.", "So more residents own a leash than own a dog."],
+      "plantedWrong": 2,
+      "plantedWhy": ["Every dog owner is a leash owner.", "Only \"some\" leash owners lack a dog.", "So most leash owners must own a dog."],
+      "plantedHint": ["The second statement says some leash owners have no dog, so \"every leash owner owns a dog\" is false.", "Dog owners without leashes would contradict the first statement, and cats are never mentioned."],
+      "plantedGuide": "Picture the dog owners and the leash owners as two circles. How do they overlap?"
+    },
+    {
+      "id": "s7",
+      "type": "blank",
+      "stem": "The scientist was ______ in her record-keeping, noting every measurement to the hundredth of a gram.",
+      "options": ["careless", "hesitant", "secretive", "prolific", "meticulous"],
+      "correct": 4,
+      "hint": ["\"Every measurement to the hundredth of a gram\" describes extreme care."],
+      "guide": "What word describes someone who records every tiny detail?",
+      "explanation": ["She recorded every measurement very precisely.", "\"Meticulous\" means extremely careful about details."]
+    },
+    {
+      "id": "s8",
+      "type": "logic",
+      "stem": "Since a bakery began offering a loyalty card, its monthly sales have risen steadily. The owner concludes that the loyalty card is responsible for the increase.\n\nWhich of the following, if true, most weakens the owner's conclusion?",
+      "options": [
+        "Many customers carry the loyalty card in their wallets.",
+        "The loyalty card costs very little to run.",
+        "The bakery's prices have not changed.",
+        "Over the same months, a large office building opened across the street from the bakery.",
+        "Other bakeries in the area also offer loyalty cards."
+      ],
+      "correct": 3,
+      "hint": ["Look for a different reason sales could have risen at the same time."],
+      "guide": "Apart from the card, what could bring a bakery more customers?",
+      "explanation": ["A new office building across the street brings many new customers.", "That could explain the rise in sales without the card."]
+    },
+    {
+      "id": "s9",
+      "type": "reading",
+      "passage": "Early maps of the world were often shaped as much by belief as by observation. Mapmakers filled unexplored regions with imagined lands and creatures, and placed sacred cities at the center. Such maps were less useful for navigation than for expressing how a society understood its place in the world.",
+      "stem": "The passage suggests that early world maps",
+      "options": [
+        "reflected their makers' beliefs about the world",
+        "were mainly used by sailors to navigate",
+        "were more accurate than modern maps",
+        "left unexplored regions blank",
+        "were drawn only by religious leaders"
+      ],
+      "correct": 0,
+      "hint": ["The first sentence says maps were shaped \"as much by belief as by observation\"."],
+      "guide": "According to the passage, what shaped early maps besides observation?",
+      "explanation": ["Maps showed imagined lands and put sacred cities at the center.", "So they reflected how their makers saw the world."]
+    },
+    {
+      "id": "t1",
+      "type": "blank",
+      "stem": "Though usually ______, the professor spoke at unusual length whenever the conversation turned to her own research.",
+      "options": ["taciturn", "verbose", "enthusiastic", "punctual", "rigorous"],
+      "correct": 0,
+      "explanation": ["\"Though usually\" sets up a contrast with speaking at length.", "\"Taciturn\" means saying very little."]
+    },
+    {
+      "id": "t2",
+      "type": "logic",
+      "stem": "After a café started playing slow classical music, its customers began staying longer on average. The owner concludes that the music makes customers linger.\n\nWhich of the following, if true, most weakens the owner's conclusion?",
+      "options": [
+        "The café also sells a wide range of pastries.",
+        "During the same month, the café replaced its hard stools with soft armchairs.",
+        "Several customers said they enjoyed the music.",
+        "Classical music is especially popular with older listeners.",
+        "The café is located near a university."
+      ],
+      "correct": 1,
+      "explanation": ["Comfortable armchairs are another reason customers would stay longer.", "So the longer visits may have nothing to do with the music."]
+    },
+    {
+      "id": "t3",
+      "type": "reading",
+      "passage": "It is often assumed that plants respond only to light, water and nutrients. However, experiments have shown that some plants grow thicker stems when they are repeatedly touched, and that tomato plants exposed to recordings of caterpillars chewing produce more defensive chemicals. Such findings suggest that plants are more sensitive to their surroundings than is commonly believed.",
+      "stem": "Which of the following best states the main point of the passage?",
+      "options": [
+        "Plants respond only to light, water and nutrients.",
+        "Tomato plants defend themselves better than other plants.",
+        "Plants respond to a wider range of signals than is usually thought.",
+        "Touching plants repeatedly harms their growth.",
+        "Caterpillars are the main threat to tomato plants."
+      ],
+      "correct": 2,
+      "explanation": ["The passage states a common assumption, then gives evidence against it.", "Its last sentence says plants are more sensitive than commonly believed."]
+    },
+    {
+      "id": "x1",
+      "type": "blank",
+      "stem": "Although the speaker's remarks were ______, the audience understood her criticism perfectly well.",
+      "options": ["oblique", "blunt", "lengthy", "cheerful", "inaudible"],
+      "correct": 0,
+      "hint": ["\"Although\" means the blank is something that would normally make criticism hard to understand.", "Blunt remarks are easy to understand, and cheerful says nothing about clarity."],
+      "guide": "What kind of remark makes its point without saying it directly?",
+      "explanation": ["\"Although\" sets up a contrast with being understood perfectly well.", "\"Oblique\" means indirect, not stated openly.", "Indirect criticism that is still understood fits the contrast."],
+      "plantedWrong": 2,
+      "plantedWhy": ["\"Although\" sets up something that could have made the criticism hard to follow.", "Long, rambling remarks can bury the main point.", "So the audience understood her despite the length of her remarks."],
+      "plantedHint": ["\"Although\" means the blank is something that would normally make criticism harder to follow.", "Blunt criticism is easy to understand, so there would be no contrast."],
+      "plantedGuide": "What could make a speaker's criticism hard to follow?"
+    },
+    {
+      "id": "x2",
+      "type": "blank",
+      "stem": "The committee's report was notably ______: it covered every aspect of the problem in exhaustive detail.",
+      "options": ["cursory", "partisan", "comprehensive", "ambiguous", "belated"],
+      "correct": 2,
+      "hint": ["The colon means the second half explains the blank.", "Cursory means quick and shallow, the opposite of exhaustive."],
+      "guide": "What do you call a report that covers every aspect of a problem?",
+      "explanation": ["The colon introduces an explanation of the blank.", "Covering every aspect in detail means being thorough and complete."],
+      "plantedWrong": 4,
+      "plantedWhy": ["Exhaustive detail takes a long time to produce.", "A report covering every aspect of a problem would be finished late.", "So the report was notably late, which is what the blank describes."],
+      "plantedHint": ["The colon means the second half tells you about the report.", "Cursory means quick and shallow, the opposite of exhaustive detail."],
+      "plantedGuide": "What does the part after the colon tell you about the report?"
+    },
+    {
+      "id": "x3",
+      "type": "blank",
+      "stem": "Far from being ______, the new manager quickly earned a reputation for changing long-standing policies.",
+      "options": ["decisive", "conventional", "unpopular", "energetic", "ambitious"],
+      "correct": 1,
+      "hint": ["\"Far from being\" means the blank is the opposite of what she actually did.", "Decisive, energetic and ambitious all fit someone who changes policies quickly, so they can't be the opposite."],
+      "guide": "What kind of manager would keep long-standing policies just as they are?",
+      "explanation": ["\"Far from being\" signals the opposite of what follows.", "She changed long-standing policies, the opposite of sticking to tradition.", "\"Conventional\" means following tradition."],
+      "plantedWrong": 2,
+      "plantedWhy": ["\"Far from being\" means the manager turned out the opposite of the blank.", "Changing long-standing policies quickly earned her a reputation, which shows she was noticed and respected.", "So she was far from disliked."],
+      "plantedHint": ["\"Far from being\" means the blank describes the opposite of how she turned out.", "Decisive, energetic and ambitious all describe someone who changes things quickly."],
+      "plantedGuide": "What does \"far from being\" tell you about the blank?"
+    },
+    {
+      "id": "x4",
+      "type": "blank",
+      "stem": "The negotiator's ______ tone calmed the tense room, and both sides soon agreed to continue talking.",
+      "options": ["strident", "sarcastic", "indifferent", "hesitant", "conciliatory"],
+      "correct": 4,
+      "hint": ["The tone calmed the room, so it must reduce conflict.", "Strident and sarcastic tones would raise tension, and an indifferent one wouldn't change it."],
+      "guide": "What kind of tone helps two sides in an argument make peace?",
+      "explanation": ["The tone calmed the room and led to agreement.", "\"Conciliatory\" means intended to make peace."],
+      "plantedWrong": 3,
+      "plantedWhy": ["A careful, uncertain tone sounds unthreatening.", "Unthreatening speech can lower the tension in a room.", "So a hesitant tone explains why the room calmed."],
+      "plantedHint": ["The tone calmed the room, so it must be one that lowers tension.", "Strident and sarcastic tones would raise tension instead."],
+      "plantedGuide": "What kind of tone would lower the tension in a room?"
+    },
+    {
+      "id": "x5",
+      "type": "blank",
+      "stem": "Rather than ______ the results of the experiment, the researchers published them in full, including the data that contradicted their hypothesis.",
+      "options": ["replicating", "publicizing", "analyzing", "suppressing", "celebrating"],
+      "correct": 3,
+      "hint": ["\"Rather than\" means the blank is the opposite of publishing everything.", "Publicizing and celebrating are ways of sharing results, not the opposite."],
+      "guide": "What is the opposite of publishing every result, even the inconvenient ones?",
+      "explanation": ["\"Rather than\" contrasts the blank with publishing in full.", "Hiding results is the opposite of publishing them.", "\"Suppressing\" means keeping something hidden."],
+      "plantedWrong": 2,
+      "plantedWhy": ["\"Rather than\" contrasts the blank with publishing everything.", "Analyzing results means picking out what matters and leaving the rest aside.", "So the researchers published in full rather than analyzing selectively."],
+      "plantedHint": ["\"Rather than\" means the blank contrasts with publishing everything in full.", "Publicizing and celebrating would also share the results."],
+      "plantedGuide": "What does \"rather than\" tell you about the blank?"
+    },
+    {
+      "id": "x6",
+      "type": "blank",
+      "stem": "The once ______ town, crowded with tourists every summer, has grown quiet since the railway station closed.",
+      "options": ["bustling", "remote", "tranquil", "ancient", "impoverished"],
+      "correct": 0,
+      "hint": ["\"Once\" contrasts the past with \"has grown quiet\", so the blank is the opposite of quiet.", "Tranquil means quiet, so it can't be the contrast."],
+      "guide": "What word describes a place that is crowded and full of activity?",
+      "explanation": ["\"Once\" contrasts what the town was with how it is now.", "It was crowded and is now quiet.", "\"Bustling\" means busy and full of activity."],
+      "plantedWrong": 1,
+      "plantedWhy": ["Tourists often travel to faraway places to escape the city.", "A distant town is exactly where crowds go on summer holidays.", "So the town was once remote, and that drew the tourists."],
+      "plantedHint": ["\"Crowded with tourists\" describes what the town was like before.", "Tranquil means quiet, which doesn't match a crowded town."],
+      "plantedGuide": "What was the town like before the railway station closed?"
+    },
+    {
+      "id": "x7",
+      "type": "logic",
+      "stem": "A city found that neighborhoods with more parks have lower rates of childhood obesity. Officials conclude that building more parks will reduce childhood obesity.\n\nWhich of the following, if true, most weakens the officials' conclusion?",
+      "options": [
+        "Parks also provide space for community events.",
+        "Children in neighborhoods with parks spend more time outdoors.",
+        "Neighborhoods with more parks also have higher family incomes, which are linked to healthier diets.",
+        "Some parks have playgrounds and sports fields.",
+        "Childhood obesity has been rising across the country."
+      ],
+      "correct": 2,
+      "hint": ["Look for another difference between neighborhoods with and without parks that could explain the gap.", "Community events and playgrounds don't explain why obesity rates differ."],
+      "guide": "Could neighborhoods with more parks differ in some other way that affects children's weight?",
+      "explanation": ["Wealthier neighborhoods may have both more parks and healthier diets.", "Then income, not parks, could explain the lower obesity.", "That weakens the conclusion that parks reduce obesity."],
+      "plantedWrong": 4,
+      "plantedWhy": ["If obesity is rising nationally, local parks are up against a much bigger trend.", "A national rise means parks can't explain local differences.", "So this weakens the officials' conclusion most."],
+      "plantedHint": ["Look for an option that gives a reason the parks might not be what matters.", "Community events, outdoor time and playgrounds don't cast doubt on the parks."],
+      "plantedGuide": "What kind of fact would make you doubt that parks are the cause?"
+    },
+    {
+      "id": "x8",
+      "type": "logic",
+      "stem": "Maria scored higher on her second practice exam than on her first. She concludes that the study app she started using between the two exams improved her score.\n\nThe conclusion depends on which of the following assumptions?",
+      "options": [
+        "The study app is popular with other students.",
+        "The second exam was not easier than the first.",
+        "Maria studied for the same number of hours before each exam.",
+        "The app costs less than a private tutor.",
+        "Maria will keep using the app."
+      ],
+      "correct": 1,
+      "hint": ["Ask what else could make a second score higher, apart from the app.", "Popularity, cost and future use have nothing to do with why her score rose."],
+      "guide": "If the second exam had easier questions, would the higher score still show the app worked?",
+      "explanation": ["An easier second exam would explain a higher score on its own.", "The conclusion only holds if the exams were equally hard.", "So it assumes the second exam was not easier."],
+      "plantedWrong": 2,
+      "plantedWhy": ["If Maria studied longer before the second exam, the extra time could explain the higher score.", "The conclusion only works if her study time stayed the same.", "So the argument assumes equal study hours."],
+      "plantedHint": ["Ask what else could have changed between the two exams, apart from the app.", "Popularity, cost and future use have nothing to do with why her score rose."],
+      "plantedGuide": "What else might have changed between the two exams?"
+    },
+    {
+      "id": "x9",
+      "type": "logic",
+      "stem": "No reptile in the zoo's collection is warm-blooded. Some animals in the zoo's night house are reptiles.\n\nIf both statements are true, which of the following must also be true?",
+      "options": [
+        "All animals in the night house are reptiles.",
+        "No animal in the night house is warm-blooded.",
+        "Some animals in the night house are not warm-blooded.",
+        "Most of the zoo's reptiles live in the night house.",
+        "The night house contains no mammals."
+      ],
+      "correct": 2,
+      "hint": ["Only \"some\" night-house animals are reptiles, so the others could be anything.", "Nothing says how many of the zoo's reptiles live in the night house."],
+      "guide": "What do you know for sure about the night-house animals that are reptiles?",
+      "explanation": ["Some night-house animals are reptiles.", "No reptile is warm-blooded.", "So at least some night-house animals are not warm-blooded."],
+      "plantedWrong": 1,
+      "plantedWhy": ["The night house contains reptiles.", "No reptile is warm-blooded.", "So no animal in the night house is warm-blooded."],
+      "plantedHint": ["Nothing says what share of the zoo's reptiles live in the night house.", "Nothing says every night-house animal is a reptile."],
+      "plantedGuide": "What can you say about the reptiles that live in the night house?"
+    },
+    {
+      "id": "x10",
+      "type": "logic",
+      "stem": "A café owner noticed that on days when she played upbeat music, customers spent more money. She concludes that upbeat music encourages customers to spend more.\n\nWhich of the following, if true, most strengthens her conclusion?",
+      "options": [
+        "She played upbeat music mostly on weekends, when the café is busiest.",
+        "Customers said they liked the music.",
+        "When she switched the music on and off at random times, spending rose only while upbeat music played.",
+        "Upbeat music is popular in many cafés.",
+        "The café also sells music albums."
+      ],
+      "correct": 2,
+      "hint": ["The best support rules out other reasons spending might rise on those days.", "Other cafés' music choices and selling albums don't show what caused the extra spending."],
+      "guide": "How could the owner test whether it's the music, and not the day, that makes people spend more?",
+      "explanation": ["Random switching rules out the day of the week as the cause.", "Spending rose only while upbeat music played.", "That links the music itself to the spending."],
+      "plantedWrong": 1,
+      "plantedWhy": ["Customers said they liked the upbeat music.", "People spend more in places they enjoy.", "So this strengthens the conclusion most."],
+      "plantedHint": ["Look for an option that connects the music itself to the spending.", "Other cafés' music choices and selling albums don't tell you about this café's spending."],
+      "plantedGuide": "What kind of evidence would link the music to the spending?"
+    },
+    {
+      "id": "x11",
+      "type": "logic",
+      "stem": "Every student who joined the robotics club last year improved their math grade. Therefore, joining the robotics club improves students' math grades.\n\nWhich of the following, if true, most weakens the argument?",
+      "options": [
+        "The robotics club meets twice a week.",
+        "Most students at the school improved their math grades last year after a new teaching method was introduced.",
+        "Some robotics club members also play in the school band.",
+        "The robotics club is the school's most popular club.",
+        "Several club members hope to study engineering."
+      ],
+      "correct": 1,
+      "hint": ["Look for something that would explain the improvement even without the club.", "Meeting times, band membership and popularity don't explain grade changes."],
+      "guide": "Did only club members improve, or might nearly everyone have improved last year?",
+      "explanation": ["If most students improved after a new teaching method, the club members would have improved anyway.", "So the club may have nothing to do with it."],
+      "plantedWrong": 4,
+      "plantedWhy": ["Students who hope to study engineering are already motivated in math.", "Motivated students improve their grades whether or not they join a club.", "So this weakens the argument most."],
+      "plantedHint": ["Look for something that could explain the improvement without the club.", "Meeting times, band membership and popularity don't explain grade changes."],
+      "plantedGuide": "What else could explain why the club members' grades went up?"
+    },
+    {
+      "id": "x12",
+      "type": "logic",
+      "stem": "If the library extends its opening hours, it will need to hire more staff. The library will not hire more staff this year.\n\nIf both statements are true, which of the following must also be true?",
+      "options": [
+        "The library will reduce its opening hours this year.",
+        "The library already has enough staff.",
+        "The library will extend its opening hours next year.",
+        "Library staff will work longer shifts this year.",
+        "The library will not extend its opening hours this year."
+      ],
+      "correct": 4,
+      "hint": ["Extending hours requires more staff, and there will be no new staff.", "Nothing is said about next year, current staffing levels, or shift lengths."],
+      "guide": "If extending hours needs new staff, and there are no new staff, what can't happen?",
+      "explanation": ["Extending hours would require hiring more staff.", "No staff will be hired this year.", "So the library cannot extend its hours this year."],
+      "plantedWrong": 0,
+      "plantedWhy": ["Without new staff, the library can't keep covering its schedule.", "Not hiring means fewer people for the same hours.", "So the library must cut its hours this year."],
+      "plantedHint": ["Nothing is said about next year, current staffing levels, or shift lengths.", "Focus on what the two statements together rule out."],
+      "plantedGuide": "What do the two statements together tell you about this year?"
+    },
+    {
+      "id": "x13",
+      "type": "reading",
+      "passage": "Many people believe that children who learn two languages at once become confused. Research suggests otherwise. Although bilingual children may begin speaking slightly later and sometimes mix words from both languages, they usually catch up by school age, and many studies find that they are better at switching between tasks.",
+      "stem": "The primary purpose of the passage is to",
+      "options": [
+        "argue that all children should learn two languages",
+        "explain why bilingual children begin speaking later",
+        "challenge a common belief about bilingual children",
+        "describe how to teach a second language",
+        "show that bilingual children stay confused until school age"
+      ],
+      "correct": 2,
+      "hint": ["The passage opens with what \"many people believe\" and then says \"Research suggests otherwise\".", "It never describes teaching methods."],
+      "guide": "What does the passage do with the belief in its first sentence?",
+      "explanation": ["The passage states a popular belief, then says research suggests otherwise.", "The rest gives evidence against that belief."],
+      "plantedWrong": 0,
+      "plantedWhy": ["The passage lists advantages that bilingual children have.", "If learning two languages brings advantages, every child would benefit.", "So the passage argues that all children should learn two languages."],
+      "plantedHint": ["The passage never describes how to teach a language.", "Later speech is mentioned only briefly, so explaining it isn't the main purpose."],
+      "plantedGuide": "What does the passage say about bilingual children overall?"
+    },
+    {
+      "id": "x14",
+      "type": "reading",
+      "passage": "Urban gardens are often praised for supplying fresh vegetables to city residents. Yet their greatest value may lie elsewhere. Studies of community gardens show that they bring neighbors into regular contact, and neighborhoods with active gardens report stronger social ties and lower rates of vandalism. The vegetables, in other words, may be the least important thing these gardens grow.",
+      "stem": "The author suggests that the most important benefit of urban gardens is",
+      "options": [
+        "the fresh vegetables they supply",
+        "the money residents save on food",
+        "the education they give children about nature",
+        "the lower vandalism rates they cause on their own",
+        "the stronger connections they build between neighbors"
+      ],
+      "correct": 4,
+      "hint": ["\"Yet their greatest value may lie elsewhere\" means the vegetables aren't the main point.", "Saving money and teaching children are never mentioned."],
+      "guide": "What does the passage say gardens do for the people who live near them?",
+      "explanation": ["The author says the gardens' greatest value isn't the vegetables.", "Gardens bring neighbors into contact and strengthen social ties."],
+      "plantedWrong": 3,
+      "plantedWhy": ["The passage says neighborhoods with gardens report less vandalism.", "Reducing crime is a major benefit for any neighborhood.", "So lower vandalism is the gardens' most important benefit."],
+      "plantedHint": ["\"Yet their greatest value may lie elsewhere\" means the vegetables aren't the main point.", "Saving money and teaching children are never mentioned."],
+      "plantedGuide": "Which benefits of gardens does the passage actually mention?"
+    },
+    {
+      "id": "x15",
+      "type": "reading",
+      "passage": "The invention of the refrigerator changed not only how people stored food but also how they shopped. Before refrigeration, many households bought fresh food daily from nearby markets. Once food could be kept for a week or more, families began shopping less often and in larger quantities, which in turn helped large supermarkets replace small neighborhood shops.",
+      "stem": "According to the passage, refrigeration contributed to the growth of supermarkets by",
+      "options": [
+        "allowing families to shop less often and buy more at a time",
+        "making food cheaper to produce",
+        "letting markets stay open longer",
+        "reducing the number of people who cooked at home",
+        "making neighborhood shops more expensive to run"
+      ],
+      "correct": 0,
+      "hint": ["The passage describes a change in how families shopped.", "Food prices, opening hours and home cooking are never mentioned."],
+      "guide": "How did families' shopping habits change once food could be kept longer?",
+      "explanation": ["Families could store food, so they shopped less often and bought more.", "That shopping pattern favored large supermarkets over small shops."],
+      "plantedWrong": 4,
+      "plantedWhy": ["Small neighborhood shops needed refrigerators to keep their food fresh.", "Buying and running refrigerators raised their costs.", "So refrigeration helped supermarkets by raising small shops' costs."],
+      "plantedHint": ["Food prices, opening hours and home cooking are never mentioned.", "Look at the chain of changes the last sentence describes."],
+      "plantedGuide": "What chain of changes does the last sentence describe?"
+    },
+    {
+      "id": "x16",
+      "type": "reading",
+      "passage": "Some historians argue that the decline of the ancient city of Ur was caused by war. Others point to a slower process: over centuries, irrigation left salt in the soil, and crop yields fell steadily. The second explanation has gained support from soil samples showing rising salt levels in the centuries before the city was abandoned.",
+      "stem": "The soil samples mentioned in the passage serve mainly to",
+      "options": [
+        "prove that war never affected Ur",
+        "show that irrigation was invented in Ur",
+        "explain how salt is removed from soil",
+        "support one explanation of Ur's decline over another",
+        "show that both explanations are equally likely"
+      ],
+      "correct": 3,
+      "hint": ["The passage says the second explanation \"has gained support\" from the samples.", "Removing salt and the invention of irrigation are never discussed."],
+      "guide": "Which of the two explanations do the soil samples back up?",
+      "explanation": ["The samples show salt building up before the city was abandoned.", "That backs the slow-decline explanation over the war explanation."],
+      "plantedWrong": 0,
+      "plantedWhy": ["The samples show salt levels rising steadily for centuries.", "That means the decline was gradual, with no sudden break.", "So the samples prove that war never affected Ur."],
+      "plantedHint": ["Removing salt from soil and the invention of irrigation are never discussed.", "The samples are said to favor one side, so they don't show both are equally likely."],
+      "plantedGuide": "How do the soil samples relate to the two explanations in the passage?"
     }
   ]
 }

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Segmented from './Segmented';
 
 const QUESTIONS = [
-  { key: 'gender', label: 'Gender', options: ['Male', 'Female', 'Prefer not to say'] },
+  { key: 'gender', label: 'Gender', options: ['Male', 'Female', 'Other', 'Prefer not to say'] },
   { key: 'nativeEnglish', label: 'Are you a native English speaker?', options: ['Yes', 'No'] },
   {
     key: 'aiUse',

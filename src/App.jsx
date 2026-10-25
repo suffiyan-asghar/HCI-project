@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import { archive, clearActive, loadActive, saveActive } from './lib/storage';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { syncSession } from './lib/api';
+import { ACTIVE_KEY, archive, clearActive, loadActive, saveActive } from './lib/storage';
 import { questionProgress } from './lib/session';
 import StartScreen from './components/StartScreen';
 import Consent from './components/Consent';
@@ -10,6 +11,7 @@ import EffortRating from './components/EffortRating';
 import Questionnaire from './components/Questionnaire';
 import Debrief from './components/Debrief';
 import Done from './components/Done';
+import AdminPage from './components/AdminPage';
 
 const SCREENS = {
   consent: Consent,
@@ -23,11 +25,36 @@ const SCREENS = {
 };
 
 export default function App() {
+  if (window.location.pathname === '/admin') {
+    return (
+      <Shell>
+        <AdminPage />
+      </Shell>
+    );
+  }
+  return <Study />;
+}
+
+function Study() {
   const [session, setSession] = useState(loadActive);
+  const [otherTab, setOtherTab] = useState(false);
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+
+  // Only one tab may run the session: if another tab changes it, this one stops.
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === ACTIVE_KEY) setOtherTab(true);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   useEffect(() => {
-    if (session) saveActive(session);
-  }, [session]);
+    if (!session || otherTab) return;
+    saveActive(session);
+    syncSession(session);
+  }, [session, otherTab]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,12 +64,18 @@ export default function App() {
     setSession((s) => s && { ...s, events: [...s.events, { t: Date.now(), step: s.stepIndex, type, ...data }] });
   }, []);
 
+  // Keeps the current question's unfinished state (choice, chat) so a refresh can restore it.
+  const saveDraft = useCallback((draft) => {
+    setSession((s) => s && { ...s, draft: { ...draft, step: s.stepIndex } });
+  }, []);
+
   // Stores the current screen's response and moves to the next screen.
   const complete = useCallback((data = {}) => {
     setSession((s) => {
       const step = s.steps[s.stepIndex];
       const next = {
         ...s,
+        draft: null,
         responses: { ...s.responses, [s.stepIndex]: data },
         stepIndex: s.stepIndex + 1,
         events: [...s.events, { t: Date.now(), step: s.stepIndex, type: 'step_complete', kind: step.kind }],
@@ -65,12 +98,15 @@ export default function App() {
   useEffect(() => {
     const onKey = (e) => {
       if (!(e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'x')) return;
-      setSession((s) => {
-        if (!s || !window.confirm(`End session ${s.participantId} and return to the start screen?`)) return s;
-        if (!s.finishedAt) archive({ ...s, status: 'aborted', finishedAt: new Date().toISOString() });
-        clearActive();
-        return null;
-      });
+      const s = sessionRef.current;
+      if (!s || !window.confirm(`End session ${s.participantId} and return to the start screen?`)) return;
+      if (!s.finishedAt) {
+        const aborted = { ...s, status: 'aborted', finishedAt: new Date().toISOString() };
+        archive(aborted);
+        syncSession(aborted);
+      }
+      clearActive();
+      setSession(null);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -87,6 +123,17 @@ export default function App() {
     setSession(finished);
   }, [session]);
 
+  if (otherTab) {
+    return (
+      <Shell>
+        <div className="panel narrow center">
+          <h1>StudyBot is open in another tab</h1>
+          <p className="secondary">Close this tab and carry on in the other one, so no answers are lost.</p>
+        </div>
+      </Shell>
+    );
+  }
+
   if (!session) {
     return (
       <Shell>
@@ -102,7 +149,15 @@ export default function App() {
   return (
     <Shell progress={showProgress ? questionProgress(session) : null}>
       <div className="screen" key={session.stepIndex}>
-        <Screen session={session} step={step} log={log} onComplete={complete} onReset={reset} />
+        <Screen
+          session={session}
+          step={step}
+          draft={session.draft?.step === session.stepIndex ? session.draft : null}
+          saveDraft={saveDraft}
+          log={log}
+          onComplete={complete}
+          onReset={reset}
+        />
       </div>
     </Shell>
   );

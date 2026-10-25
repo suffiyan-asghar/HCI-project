@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { hasTutor } from '../lib/session';
 import Segmented from './Segmented';
 
 const TLX = [
@@ -23,14 +24,17 @@ const LIKERT = [
 
 const AGREEMENT = ['1', '2', '3', '4', '5'];
 
-export default function Questionnaire({ onComplete }) {
+export default function Questionnaire({ session, onComplete }) {
+  const withTutor = hasTutor(session.group);
   const [tlx, setTlx] = useState({});
   const [likert, setLikert] = useState({});
   const [noticedWrong, setNoticedWrong] = useState(null);
   const [comments, setComments] = useState('');
 
+  // The control group never met StudyBot, so it only answers the workload part.
   const complete =
-    TLX.every((t) => tlx[t.key] !== undefined) && LIKERT.every((l) => likert[l.key] !== undefined) && noticedWrong !== null;
+    TLX.every((t) => tlx[t.key] !== undefined) &&
+    (!withTutor || (LIKERT.every((l) => likert[l.key] !== undefined) && noticedWrong !== null));
 
   const setTlxValue = (key) => (e) => setTlx((s) => ({ ...s, [key]: Number(e.target.value) }));
 
@@ -71,27 +75,31 @@ export default function Questionnaire({ onComplete }) {
         })}
       </div>
 
-      <h2>StudyBot</h2>
-      <p className="secondary">How much do you agree with each statement? 1 is strongly disagree, 5 is strongly agree.</p>
-      {LIKERT.map((item) => (
-        <div key={item.key} className="statement">
-          <Segmented
-            label={item.q}
-            options={AGREEMENT}
-            value={likert[item.key] ? String(likert[item.key]) : undefined}
-            onChange={(v) => setLikert((s) => ({ ...s, [item.key]: Number(v) }))}
-            ends={['Strongly disagree', 'Strongly agree']}
-          />
-        </div>
-      ))}
+      {withTutor && (
+        <>
+          <h2>StudyBot</h2>
+          <p className="secondary">How much do you agree with each statement? 1 is strongly disagree, 5 is strongly agree.</p>
+          {LIKERT.map((item) => (
+            <div key={item.key} className="statement">
+              <Segmented
+                label={item.q}
+                options={AGREEMENT}
+                value={likert[item.key] ? String(likert[item.key]) : undefined}
+                onChange={(v) => setLikert((s) => ({ ...s, [item.key]: Number(v) }))}
+                ends={['Strongly disagree', 'Strongly agree']}
+              />
+            </div>
+          ))}
 
-      <h2>One last thing</h2>
-      <Segmented
-        label="Did any of StudyBot's answers seem wrong to you?"
-        options={['Yes', 'No', 'Not sure']}
-        value={noticedWrong}
-        onChange={setNoticedWrong}
-      />
+          <h2>One last thing</h2>
+          <Segmented
+            label="Did any of StudyBot's answers seem wrong to you?"
+            options={['Yes', 'No', 'Not sure']}
+            value={noticedWrong}
+            onChange={setNoticedWrong}
+          />
+        </>
+      )}
 
       <div className="field-group">
         <label className="field-label" htmlFor="comments">
@@ -102,7 +110,7 @@ export default function Questionnaire({ onComplete }) {
 
       <div className="actions">
         {!complete && <span className="footnote">Answer every item to continue.</span>}
-        <button className="btn primary" disabled={!complete} onClick={() => onComplete({ tlx, likert, noticedWrong, comments })}>
+        <button className="btn primary" disabled={!complete} onClick={() => onComplete({ tlx, likert: withTutor ? likert : null, noticedWrong, comments })}>
           Continue
         </button>
       </div>

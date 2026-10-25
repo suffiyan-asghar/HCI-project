@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// host: true exposes the dev server on the LAN so the study laptops can reach it.
+// In development, API calls go to the study server (npm run server) on port 3000.
 export default defineConfig({
   plugins: [react()],
-  server: { host: true, port: 5173 },
+  server: { host: true, port: 5173, proxy: { '/api': 'http://localhost:3000' } },
 });

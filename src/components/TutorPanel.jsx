@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { CONFIG } from '../config';
 import { firstLevel, givesAnswer, nextLevel } from '../tutor/policy';
 import { getTutorReply } from '../tutor';
 import RichText from './RichText';
@@ -16,45 +17,48 @@ export const emptyChat = {
 
 // Both groups see the same panel. They differ only in the guess-first gate
 // (Adaptive) and in which help level each reply uses (see tutor/policy.js).
-export default function TutorPanel({ group, question, planted, selected, noAiResults, chat, setChat, log }) {
+export default function TutorPanel({ session, question, planted, selected, chat, setChat, log }) {
+  const { group, noAiResults } = session;
   const [draft, setDraft] = useState('');
+  const [, setTick] = useState(0);
   const listRef = useRef(null);
   const locked = group === 'adaptive' && selected === null && !chat.noIdea && chat.messages.length === 0;
+
+  // Follow-ups unlock a moment after each reply, so it gets read before asking for more.
+  const lastBot = chat.messages.findLast((m) => m.role === 'bot' && !m.error);
+  const readyAt = lastBot ? lastBot.t + CONFIG.followUpDelayMs : 0;
+  const coolingDown = Date.now() < readyAt;
+  useEffect(() => {
+    if (!coolingDown) return;
+    const timer = setTimeout(() => setTick((n) => n + 1), readyAt - Date.now());
+    return () => clearTimeout(timer);
+  }, [coolingDown, readyAt]);
 
   useEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [chat.messages.length, chat.pending]);
 
-  async function send(text) {
-    text = text.trim();
-    if (!text || chat.pending || locked) return;
-    setDraft('');
+  // A reply that was still loading when the page was refreshed: ask for it again.
+  useEffect(() => {
+    if (chat.pending) requestReply(chat.level, chat.messages, chat.levelsShown.at(-1) ?? null);
+    // Only on mount, when restoring a saved chat.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const isFirst = chat.messages.length === 0;
-    const previousLevel = chat.level;
-    const level = previousLevel === null ? firstLevel(group, noAiResults) : nextLevel(group, previousLevel);
-
-    setChat((c) => ({
-      ...c,
-      pending: true,
-      level,
-      messages: [...c.messages, { role: 'user', text, t: Date.now() }],
-      ...(isFirst && { selectionAtFirstAsk: selected }),
-    }));
-    log('chat_user', { qid: question.id, text, level, selectedAtSend: selected });
-
+  async function requestReply(level, messages, previousLevel) {
     try {
-      const reply = await getTutorReply({ question, level, planted, group });
+      const reply = await getTutorReply({ session, question, level, planted, messages });
       const stated = givesAnswer(level) ? (planted ? question.plantedWrong : question.correct) : null;
+      const message = { role: 'bot', text: reply.text, level, source: reply.source, t: Date.now(), ...(reply.note && { note: reply.note }) };
       setChat((c) => ({
         ...c,
         pending: false,
-        messages: [...c.messages, { role: 'bot', text: reply, level, t: Date.now() }],
+        messages: [...c.messages, message],
         levelsShown: [...c.levelsShown, level],
         aiStatedAnswer: stated ?? c.aiStatedAnswer,
       }));
-      log('chat_bot', { qid: question.id, level, statedAnswer: stated });
+      log('chat_bot', { qid: question.id, level, statedAnswer: stated, source: reply.source });
     } catch (err) {
       setChat((c) => ({
         ...c,
@@ -66,12 +70,33 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
     }
   }
 
+  function send(text) {
+    text = text.trim();
+    if (!text || chat.pending || locked || coolingDown) return;
+    setDraft('');
+
+    const isFirst = chat.messages.length === 0;
+    const previousLevel = chat.level;
+    const level = previousLevel === null ? firstLevel(group, noAiResults) : nextLevel(group, previousLevel);
+    const userMessage = { role: 'user', text, t: Date.now() };
+    setChat((c) => ({
+      ...c,
+      pending: true,
+      level,
+      messages: [...c.messages, userMessage],
+      ...(isFirst && { selectionAtFirstAsk: selected }),
+    }));
+    log('chat_user', { qid: question.id, text, level, selectedAtSend: selected });
+    requestReply(level, [...chat.messages, userMessage], previousLevel);
+  }
+
   function noIdea() {
     setChat((c) => ({ ...c, noIdea: true }));
     log('no_idea', { qid: question.id });
   }
 
   const quickReply = chat.messages.length === 0 ? 'Can you help me with this question?' : 'Can you help a bit more?';
+  const busy = chat.pending || coolingDown;
 
   return (
     <aside className="tutor" aria-label="StudyBot AI tutor">
@@ -115,7 +140,7 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
         </div>
       ) : (
         <div className="tutor-footer">
-          <button className="suggestion" disabled={chat.pending} onClick={() => send(quickReply)}>
+          <button className="suggestion" disabled={busy} onClick={() => send(quickReply)}>
             {quickReply}
           </button>
           <form
@@ -126,7 +151,7 @@ export default function TutorPanel({ group, question, planted, selected, noAiRes
             }}
           >
             <input value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Message StudyBot" aria-label="Message StudyBot" />
-            <button className="send" type="submit" aria-label="Send" disabled={!draft.trim() || chat.pending}>
+            <button className="send" type="submit" aria-label="Send" disabled={!draft.trim() || busy}>
               <ArrowUpIcon />
             </button>
           </form>

@@ -1,7 +1,8 @@
-// Until the server exists (build step 5), sessions are kept in this browser's localStorage.
+// The server's SQLite database is the record of truth (lib/api.js). This browser copy lets a
+// session survive a page refresh and keeps a local backup of finished sessions.
 const ACTIVE = 'studybot.active';
 const COMPLETED = 'studybot.completed';
-const COUNTER = 'studybot.counter';
+export const ACTIVE_KEY = ACTIVE;
 
 function read(key, fallback) {
   try {
@@ -34,13 +35,6 @@ export const loadCompleted = () => read(COMPLETED, []);
 export function archive(session) {
   const others = loadCompleted().filter((s) => s.participantId !== session.participantId);
   write(COMPLETED, [...others, session]);
-}
-
-export const peekCounter = () => read(COUNTER, 0);
-export function takeCounter() {
-  const n = peekCounter();
-  write(COUNTER, n + 1);
-  return n;
 }
 
 export function downloadJson(filename, data) {

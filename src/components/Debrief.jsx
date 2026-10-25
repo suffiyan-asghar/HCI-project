@@ -1,8 +1,10 @@
-import { getQuestion, LETTERS } from '../lib/session';
+import { getQuestion, hasTutor, LETTERS } from '../lib/session';
 
 const answerText = (q, i) => `(${LETTERS[i]}) ${q.options[i]}`;
 
 export default function Debrief({ session, onComplete }) {
+  if (!hasTutor(session.group)) return <ControlDebrief onComplete={onComplete} />;
+
   const planted = session.steps
     .map((step, i) => ({ step, response: session.responses[i] }))
     .filter(({ step }) => step.planted);
@@ -12,9 +14,10 @@ export default function Debrief({ session, onComplete }) {
       <p className="kicker">Debrief</p>
       <h1>What we were studying</h1>
       <p>
-        We're testing whether easy, answer-first AI help makes students rely on the AI more, and whether a tutor
-        that asks you to think first can prevent that. Half of the participants had a tutor that gave answers
-        straight away. The other half had one that sometimes gave a hint or a question instead.
+        We're testing whether easy, answer-first AI help makes students rely on the AI more and remember less, and
+        whether a tutor that asks you to think first can prevent that. Some participants had a tutor that gave
+        answers straight away, some had one that sometimes gave a hint or a question instead, and some worked
+        without AI. The final check showed how much stuck from earlier in the session.
       </p>
       <p>
         <strong>On two practice questions, StudyBot was set up to give a wrong answer on purpose.</strong> This
@@ -52,6 +55,31 @@ export default function Debrief({ session, onComplete }) {
       <p>
         Everywhere else, StudyBot tried to give correct help. Please don't mention this part to other students
         until the study is over, so their results stay fair. If you have questions, ask the researcher.
+      </p>
+
+      <div className="actions">
+        <button className="btn primary" onClick={() => onComplete({ seenAt: new Date().toISOString() })}>
+          Finish
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ControlDebrief({ onComplete }) {
+  return (
+    <div className="panel medium">
+      <p className="kicker">Debrief</p>
+      <h1>What we were studying</h1>
+      <p>
+        We're testing whether easy, answer-first AI help makes students rely on the AI more and remember less, and
+        whether a tutor that asks you to think first can prevent that. Other participants practised with an AI
+        tutor called StudyBot. You were in the comparison group, which worked without AI, so we can see what
+        people achieve and remember on their own.
+      </p>
+      <p>
+        The final check showed how much stuck from earlier in the session. Please don't discuss the study with
+        other students until it is over, so their results stay fair. If you have questions, ask the researcher.
       </p>
 
       <div className="actions">

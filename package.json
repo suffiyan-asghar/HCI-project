@@ -3,12 +3,24 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
   "scripts": {
     "dev": "vite",
+    "preserver": "node scripts/require-node.cjs",
+    "prestart": "node scripts/require-node.cjs",
+    "precheck": "node scripts/require-node.cjs",
+    "server":"node --env-file-if-exists=.env --watch-path=server server/index.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "start": "vite build && node --env-file-if-exists=.env server/index.js",
+    "check": "node --env-file-if-exists=.env scripts/check.js",
+    "test": "node --test \"test/*.test.js\"",
+    "questions:sheet": "node scripts/question-sheet.js"
   },
   "dependencies": {
+    "express": "^5.3.0",
+    "groq-sdk": "^1.6.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

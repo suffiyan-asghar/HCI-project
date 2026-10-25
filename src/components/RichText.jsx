@@ -1,8 +1,10 @@
-// Renders the small subset of markdown the tutor uses: **bold** and "- " bullets.
+// Renders the small subset of markdown the tutor uses: **bold**, *italics* and "- " bullets.
 function inline(text) {
-  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-    part.startsWith('**') && part.endsWith('**') ? <strong key={i}>{part.slice(2, -2)}</strong> : part,
-  );
+  return text.split(/(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/g).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) return <strong key={i}>{part.slice(2, -2)}</strong>;
+    if (part.length > 2 && part.startsWith('*') && part.endsWith('*')) return <em key={i}>{part.slice(1, -1)}</em>;
+    return part;
+  });
 }
 
 export default function RichText({ text }) {
@@ -10,6 +12,7 @@ export default function RichText({ text }) {
   let list = null;
 
   text.split('\n').forEach((line, i) => {
+    line = line.trimEnd();
     if (line.startsWith('- ')) {
       if (!list) {
         list = [];

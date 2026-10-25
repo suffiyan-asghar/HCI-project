@@ -1,7 +1,22 @@
+import { useSyncStatus } from '../lib/api';
 import { downloadJson } from '../lib/storage';
+
+const SYNC_TEXT = {
+  saved: 'Saved to the study server',
+  saving: 'Saving to the study server…',
+  offline: "Not saved to the server yet: it can't be reached. Retrying.",
+};
 
 export default function Done({ session, onReset }) {
   const excluded = session.status === 'excluded';
+  const sync = useSyncStatus();
+
+  function nextParticipant() {
+    if (sync !== 'saved' && !window.confirm('This session has not reached the server yet. Download it first. Continue anyway?')) {
+      return;
+    }
+    onReset();
+  }
 
   return (
     <div className="panel narrow center">
@@ -18,12 +33,17 @@ export default function Done({ session, onReset }) {
       <p>Please let the researcher know you've finished.</p>
 
       <div className="researcher-bar">
-        <span>Researcher · {session.participantId}</span>
+        <span className={sync === 'offline' ? 'text-red' : undefined}>
+          Researcher · {session.participantId} · {SYNC_TEXT[sync]}
+        </span>
         <span>
-          <button className="btn plain" onClick={() => downloadJson(`studybot-${session.participantId}.json`, session)}>
+          <button
+            className="btn plain"
+            onClick={() => downloadJson(`studybot-${session.participantId}.json`, { ...session, token: undefined })}
+          >
             Download session
           </button>
-          <button className="btn plain" onClick={onReset}>
+          <button className="btn plain" onClick={nextParticipant}>
             Next participant
           </button>
         </span>
