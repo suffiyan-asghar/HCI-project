@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import { exportUrl, fetchAdmin } from '../lib/api';
+import { exportUrl, fetchAdmin, STATIC } from '../lib/api';
 import { GROUPS } from '../lib/constants';
+import { downloadJson, loadCompleted } from '../lib/storage';
 import ResearcherLogin from './ResearcherLogin';
 
 // "stale" is an active session with no saves for a while (closed laptop, crashed browser).
@@ -118,12 +119,19 @@ export default function AdminPage() {
 
       <h2>Download</h2>
       <div className="group">
-        {EXPORTS.map(([file, description]) => (
-          <a key={file} className="row stacked" href={exportUrl(file)}>
-            <span className="row-label">{file}</span>
-            <span className="row-value">{description}</span>
-          </a>
-        ))}
+        {STATIC ? (
+          <button className="row stacked" type="button" onClick={() => downloadJson(`studybot-sessions-${Date.now()}.json`, loadCompleted())}>
+            <span className="row-label">sessions.json</span>
+            <span className="row-value">Demo build: the finished sessions kept in this browser</span>
+          </button>
+        ) : (
+          EXPORTS.map(([file, description]) => (
+            <a key={file} className="row stacked" href={exportUrl(file)}>
+              <span className="row-label">{file}</span>
+              <span className="row-value">{description}</span>
+            </a>
+          ))
+        )}
       </div>
 
       <h2>Sessions</h2>

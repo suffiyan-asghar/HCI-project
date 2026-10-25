@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { checkResearcherKey, createSession } from '../lib/api';
+import { checkResearcherKey, createSession, STATIC } from '../lib/api';
 import { buildSteps } from '../lib/session';
 import { downloadJson, loadCompleted } from '../lib/storage';
 import ResearcherLogin from './ResearcherLogin';
@@ -80,8 +80,9 @@ export default function StartScreen({ onStart }) {
             </div>
             {error && <p className="warn">{error}</p>}
             <p className="footnote">
-              The participant ID is assigned by the server. Auto-assign puts each person in the group with the fewest
-              participants so far.
+              {STATIC
+                ? 'Demo build: no server, so sessions are kept in this browser only and the tutor gives canned replies.'
+                : 'The participant ID is assigned by the server. Auto-assign puts each person in the group with the fewest participants so far.'}
             </p>
 
             <div className="actions">

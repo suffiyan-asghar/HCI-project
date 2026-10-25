@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import * as local from './localApi';
 
 // Talks to the study server (server/index.js), which keeps all results in SQLite.
 //
@@ -39,10 +40,13 @@ async function request(path, { method = 'GET', body, token } = {}) {
   return res.json();
 }
 
-export const createSession = ({ group, demo }) => request('/sessions', { method: 'POST', body: { group, demo } });
-export const checkResearcherKey = () => request('/researcher/check');
-export const fetchTutorReply = (token, body) => request('/tutor', { method: 'POST', body, token });
-export const fetchAdmin = () => request('/admin/sessions');
+// Frontend-only demo build (npm run build:static): no server, everything stays in this browser.
+export const STATIC = import.meta.env.VITE_STATIC === 'true';
+
+export const createSession = STATIC ? local.createSession : ({ group, demo }) => request('/sessions', { method: 'POST', body: { group, demo } });
+export const checkResearcherKey = STATIC ? local.checkResearcherKey : () => request('/researcher/check');
+export const fetchTutorReply = STATIC ? local.fetchTutorReply : (token, body) => request('/tutor', { method: 'POST', body, token });
+export const fetchAdmin = STATIC ? local.fetchAdmin : () => request('/admin/sessions');
 export const exportUrl = (file) => `/api/export/${file}?key=${encodeURIComponent(getResearcherKey())}`;
 
 // Session sync: the latest snapshot of each session is queued and sent one request at a
@@ -126,6 +130,7 @@ async function flush() {
 }
 
 export function syncSession(session) {
+  if (STATIC) return;
   const id = session.participantId;
   pending.delete(id); // re-insert so the newest snapshot keeps its place in line
   pending.set(id, session);

@@ -1,8 +1,8 @@
-import { useSyncStatus } from '../lib/api';
+import { STATIC, useSyncStatus } from '../lib/api';
 import { downloadJson } from '../lib/storage';
 
 const SYNC_TEXT = {
-  saved: 'Saved to the study server',
+  saved: STATIC ? 'Demo build: saved in this browser only' : 'Saved to the study server',
   saving: 'Saving to the study server…',
   offline: "Not saved to the server yet: it can't be reached. Retrying.",
   rejected: 'The server rejected this session. Download it and keep the file.',

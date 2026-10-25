@@ -1,0 +1,29 @@
+# Render Blueprint: one web service that builds the React app and serves it from the Express server.
+# Deploy: Render dashboard > New > Blueprint > pick this repo. Render will ask for the secret values below.
+services:
+  - type: web
+    name: studybot
+    runtime: node
+    # A persistent disk needs a paid instance. On the free plan the SQLite file is wiped
+    # on every deploy and restart, which would lose participant data.
+    plan: starter
+    region: singapore
+    branch: study-server
+    # Vite is a devDependency, so install those too; "npm start" would rebuild on every boot.
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22.13.0"
+      - key: DB_PATH
+        value: /var/data/studybot.sqlite
+      - key: RESEARCHER_PASSWORD
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+    # Keeps the database and its backups (written next to it) across deploys.
+    disk:
+      name: studybot-data
+      mountPath: /var/data
+      sizeGB: 1

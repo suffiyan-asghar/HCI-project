@@ -13,6 +13,7 @@
     "precheck": "node scripts/require-node.cjs",
     "server":"node --env-file-if-exists=.env --watch-path=server server/index.js",
     "build": "vite build",
+    "build:static": "vite build --mode static",
     "start": "vite build && node --env-file-if-exists=.env server/index.js",
     "check": "node --env-file-if-exists=.env scripts/check.js",
     "test": "node --test \"test/*.test.js\"",
