@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { backup, backupIfChanged, canUseTutor, createSession, DB_PATH, lastBackup, listSessions, saveSession, tableRows } from './db.js';
 import { participantRows } from './export.js';
 import { getQuestion, validateBank } from './questions.js';
+import { STATUSES } from '../src/lib/constants.js';
 import { tutorInfo, tutorReply, tutorStatus } from './tutor.js';
 
 const DIST = fileURLToPath(new URL('../dist', import.meta.url));
@@ -40,13 +41,12 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
 
   // Participant routes are authorised by the session's own token (from createSession).
   app.put('/api/sessions/:id', (req, res) => {
-    const session = req.body;
-    if (session?.participantId !== req.params.id || !Array.isArray(session.steps) || !Array.isArray(session.events)) {
-      return res.status(400).json({ error: 'Malformed session' });
-    }
-    if (!saveSession(session, req.get('x-session-token'), getQuestion)) {
-      return res.status(404).json({ error: 'Unknown session or wrong token' });
-    }
+    const problem = sessionProblem(req.body, req.params.id);
+    if (problem) return res.status(400).json({ error: `Malformed session: ${problem}` });
+
+    const result = saveSession(req.body, req.get('x-session-token'), getQuestion);
+    if (result === 'unknown') return res.status(404).json({ error: 'Unknown session or wrong token' });
+    if (result === 'finished') return res.status(409).json({ error: 'Session already finished' });
     res.json({ ok: true });
   });
 
@@ -82,8 +82,8 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
   };
 
   app.get('/api/export/:name.csv', researcher, (req, res) => {
+    if (!Object.hasOwn(exports, req.params.name)) return res.status(404).end();
     const build = exports[req.params.name];
-    if (!build) return res.status(404).end();
     res.attachment(`studybot-${req.params.name}.csv`).type('text/csv').send(toCsv(build()));
   });
 
@@ -99,12 +99,37 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
   return app;
 }
 
+const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
+
+// Checks the shape saveSession relies on, so a bad body gets a 400 instead of a crash.
+function sessionProblem(session, id) {
+  if (!isObject(session) || session.participantId !== id) return 'participant ID';
+  if (!STATUSES.includes(session.status ?? 'active')) return 'status';
+  if (!Array.isArray(session.steps) || !session.steps.every(isObject)) return 'steps';
+  if (!isObject(session.responses)) return 'responses';
+  if (!Array.isArray(session.events) || !session.events.every((e) => isObject(e) && typeof e.t === 'number' && typeof e.type === 'string')) {
+    return 'events';
+  }
+  const badStep = session.steps.findIndex((step, i) => {
+    if (step.kind !== 'question') return false;
+    if (typeof step.qid !== 'string' || !getQuestion(step.qid)) return true;
+    const r = session.responses[i];
+    if (r === undefined) return false;
+    if (!isObject(r)) return true;
+    return r.messages !== undefined && !(Array.isArray(r.messages) && r.messages.every((m) => isObject(m) && typeof m.text === 'string'));
+  });
+  return badStep === -1 ? null : `step ${badStep}`;
+}
+
 function toCsv(rows) {
   if (rows.length === 0) return '';
   const columns = [...new Set(rows.flatMap((r) => Object.keys(r)))];
   const cell = (v) => {
     if (v === null || v === undefined) return '';
-    const s = String(v);
+    let s = String(v);
+    // Free text (comments, chat) that looks like a formula would run in Excel, so it gets a
+    // leading '. "- " bullets in tutor replies are left alone: Excel doesn't run those.
+    if (typeof v === 'string' && /^(?:[=@\t\r]|[+-](?!\s))/.test(s)) s = `'${s}`;
     return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   // The BOM makes Excel read the file as UTF-8, so emojis in chat survive.

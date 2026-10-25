@@ -32,7 +32,8 @@ export function clearActive() {
 }
 
 export const loadCompleted = () => read(COMPLETED, []);
-export function archive(session) {
+// The backup is downloadable, so it never keeps the session's secret token.
+export function archive({ token: _secret, ...session }) {
   const others = loadCompleted().filter((s) => s.participantId !== session.participantId);
   write(COMPLETED, [...others, session]);
 }

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 const bank = JSON.parse(readFileSync(new URL('../src/data/questions.json', import.meta.url), 'utf8'));
 const byId = new Map(bank.questions.map((q) => [q.id, q]));
 
-export const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+export { LETTERS } from '../src/lib/constants.js';
 
 export function getQuestion(id) {
   return byId.get(id) ?? null;

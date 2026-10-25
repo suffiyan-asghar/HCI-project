@@ -1,11 +1,10 @@
 import bank from '../data/questions.json';
 import { CONFIG } from '../config';
 
+export { GROUPS, LETTERS } from './constants';
+
 const byId = Object.fromEntries(bank.questions.map((q) => [q.id, q]));
 
-export const LETTERS = ['A', 'B', 'C', 'D', 'E'];
-
-export const GROUPS = ['standard', 'adaptive', 'control'];
 export const hasTutor = (group) => group !== 'control';
 
 // Latin square: each block appears in each round equally often across participants.

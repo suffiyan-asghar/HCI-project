@@ -20,8 +20,8 @@ export default function QuestionScreen({ session, step, draft, saveDraft, log, o
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [log, question.id, step.section, step.round]);
 
+  // Saved from the first render, so a refresh before any click keeps the original shownAt.
   useEffect(() => {
-    if (selected === null && source === null && chat === emptyChat) return;
     saveDraft({ selected, source, chat, shownAt: shownAt.current });
   }, [saveDraft, selected, source, chat]);
 

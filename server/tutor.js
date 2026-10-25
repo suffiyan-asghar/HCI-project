@@ -1,6 +1,6 @@
 import Groq from 'groq-sdk';
-import { LETTERS } from './questions.js';
-import { mockReply } from './mockTutor.js';
+import { LETTERS } from '../src/lib/constants.js';
+import { bullets, mockReply } from './mockTutor.js';
 
 const MODEL = process.env.TUTOR_MODEL || 'openai/gpt-oss-120b';
 const MAX_WORDS = 140; // the prompt asks for about 100
@@ -14,8 +14,6 @@ export const tutorInfo = { mode, model: client ? MODEL : null };
 // Running counts for the researcher page, so fallbacks (e.g. rate limits) are noticed the same day.
 const stats = { live: 0, retried: 0, fallback: 0, lastError: null };
 export const tutorStatus = () => ({ ...tutorInfo, ...stats });
-
-const bullets = (lines) => lines.map((line) => `- ${line}`).join('\n');
 
 // Stable per question. The server, not the model, decides which option is "the answer":
 // on wrong-answer checks it is the planted option, and the model only explains it.
@@ -64,14 +62,16 @@ const LEVEL_RULES = {
 };
 
 // Does the text point at option i, by letter ("(B)", "option B", "answer is B") or by its wording?
+// Letters only count in capitals: lowercase "a" is the English article ("the answer is a word…"),
+// not option A. The surrounding words may be any case.
 function mentions(text, question, i) {
   const letter = LETTERS[i];
-  if (new RegExp(`\\(${letter}\\)|\\b(?:option|answer|choice)(?:\\s+is)?\\s*:?\\s*\\**${letter}\\b`, 'i').test(text)) return true;
+  if (new RegExp(`\\(${letter}\\)|\\b(?:[Oo]ption|[Aa]nswer|[Cc]hoice)(?:\\s+[Ii]s)?\\s*:?\\s*\\**${letter}\\b`).test(text)) return true;
   const wording = question.options[i].toLowerCase().replace(/[.]$/, '');
   return wording.length >= 4 && text.toLowerCase().includes(wording);
 }
 
-const statedLetter = (text) => text.match(/Answer\s*:?\s*\**\s*\(?([A-E])\b/i)?.[1]?.toUpperCase() ?? null;
+const statedLetter = (text) => text.match(/[Aa]nswer\s*:?\s*\**\s*\(?([A-E])\b/)?.[1] ?? null;
 
 /**
  * Checks a reply against its help level, so the logged "AI stated answer" matches what the

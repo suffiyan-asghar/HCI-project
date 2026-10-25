@@ -3,6 +3,7 @@ import { mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { fileURLToPath } from 'node:url';
+import { GROUPS } from '../src/lib/constants.js';
 
 export const DB_PATH = process.env.DB_PATH || fileURLToPath(new URL('../data/studybot.sqlite', import.meta.url));
 const BACKUP_DIR = join(dirname(DB_PATH), 'backups');
@@ -84,9 +85,15 @@ db.exec(`
   );
 `);
 
-const GROUPS = ['standard', 'adaptive', 'control'];
-// Sessions that count towards group balance. Excluded, aborted and demo ones don't.
-const COUNTED = "demo = 0 AND status NOT IN ('excluded', 'aborted')";
+// An active session with no save for this long was abandoned without Ctrl+Shift+X
+// (closed laptop, crashed browser). The browser saves on every click, so a running
+// session is never this quiet.
+export const STALE_AFTER_MS = 60 * 60 * 1000;
+const staleCutoff = () => new Date(Date.now() - STALE_AFTER_MS).toISOString();
+export const isStale = (row) => row.status === 'active' && row.updated_at < staleCutoff();
+
+// Sessions that count towards group balance. Excluded, aborted, stale and demo ones don't.
+const COUNTED = "demo = 0 AND status NOT IN ('excluded', 'aborted') AND NOT (status = 'active' AND updated_at < :cutoff)";
 let changedSinceBackup = false;
 
 function transaction(fn) {
@@ -115,7 +122,7 @@ const str = (v) => (v === undefined || v === null ? null : String(v));
 export function createSession({ group: groupChoice, demo = false } = {}) {
   return transaction(() => {
     const counts = Object.fromEntries(GROUPS.map((g) => [g, 0]));
-    for (const row of db.prepare(`SELECT grp, COUNT(*) AS n FROM sessions WHERE ${COUNTED} GROUP BY grp`).all()) {
+    for (const row of db.prepare(`SELECT grp, COUNT(*) AS n FROM sessions WHERE ${COUNTED} GROUP BY grp`).all({ cutoff: staleCutoff() })) {
       counts[row.grp] = row.n;
     }
     const group = GROUPS.includes(groupChoice) ? groupChoice : GROUPS.reduce((a, b) => (counts[b] < counts[a] ? b : a));
@@ -149,26 +156,39 @@ const insertAnswer = db.prepare(`
 const insertMessage = db.prepare('INSERT INTO chat_messages VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 const insertEvent = db.prepare('INSERT INTO events VALUES (?, ?, ?, ?, ?, ?)');
 
-/** Stores a full session snapshot and rebuilds its rows in the derived tables. */
+/**
+ * Stores a session snapshot and adds its new rows to the derived tables.
+ * Returns 'saved', 'unknown' (no such session or wrong token) or 'finished' (the session
+ * already ended, so an older or different snapshot may not overwrite it).
+ *
+ * Only new rows are inserted: answers are written once, when a question is completed, and
+ * events only ever grow, so rewriting everything on every click would be wasted work.
+ */
 export function saveSession(session, token, getQuestion) {
   const id = session.participantId;
   const { token: _secret, ...data } = session;
   return transaction(() => {
-    const result = db
-      .prepare(
-        `UPDATE sessions SET status = ?, updated_at = ?, finished_at = ?, data = ?
-         WHERE participant_id = ? AND grp = ? AND token = ?`,
-      )
-      .run(str(session.status) ?? 'active', new Date().toISOString(), str(session.finishedAt), JSON.stringify(data), str(id), str(session.group), str(token));
-    if (result.changes === 0) return false;
-
-    for (const table of ['answers', 'chat_messages', 'events']) {
-      db.prepare(`DELETE FROM ${table} WHERE participant_id = ?`).run(id);
+    const row = db
+      .prepare('SELECT finished_at FROM sessions WHERE participant_id = ? AND grp = ? AND token = ?')
+      .get(str(id), str(session.group), str(token));
+    if (!row) return 'unknown';
+    if (row.finished_at) {
+      // A retry of the final save (e.g. its response was lost) is fine; anything else is stale.
+      return session.finishedAt === row.finished_at ? 'saved' : 'finished';
     }
 
+    db.prepare('UPDATE sessions SET status = ?, updated_at = ?, finished_at = ?, data = ? WHERE participant_id = ?').run(
+      str(session.status) ?? 'active',
+      new Date().toISOString(),
+      str(session.finishedAt),
+      JSON.stringify(data),
+      str(id),
+    );
+
+    const savedSteps = new Set(db.prepare('SELECT step FROM answers WHERE participant_id = ?').all(id).map((r) => r.step));
     session.steps.forEach((step, i) => {
       const r = session.responses[i];
-      if (step.kind !== 'question' || !r) return;
+      if (step.kind !== 'question' || !r || savedSteps.has(i)) return;
       insertAnswer.run({
         participant_id: id,
         step: i,
@@ -198,18 +218,20 @@ export function saveSession(session, token, getQuestion) {
       );
     });
 
-    session.events.forEach(({ t, step, type, ...rest }, idx) =>
-      insertEvent.run(id, idx, t, num(step), type, Object.keys(rest).length ? JSON.stringify(rest) : null),
+    const { saved } = db.prepare('SELECT COUNT(*) AS saved FROM events WHERE participant_id = ?').get(id);
+    session.events.slice(saved).forEach(({ t, step, type, ...rest }, i) =>
+      insertEvent.run(id, saved + i, t, num(step), type, Object.keys(rest).length ? JSON.stringify(rest) : null),
     );
-    return true;
+    return 'saved';
   });
 }
 
+/** All sessions. An abandoned active session is reported with status 'stale'. */
 export function listSessions() {
   return db
     .prepare('SELECT participant_id, grp, block_order, status, demo, created_at, updated_at, finished_at, data FROM sessions ORDER BY seq')
     .all()
-    .map(({ data, ...row }) => ({ ...row, session: data ? JSON.parse(data) : null }));
+    .map(({ data, ...row }) => ({ ...row, status: isStale(row) ? 'stale' : row.status, session: data ? JSON.parse(data) : null }));
 }
 
 /** Rows of a derived table, without demo sessions. */

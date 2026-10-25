@@ -76,6 +76,65 @@ test('only the browser holding the session token can save or use the tutor', asy
   assert.equal((await ask(s.token)).status, 403, 'no tutor after the session ends');
 });
 
+test('a finished session cannot be overwritten, but its final save can be retried', async () => {
+  const s = (await start({ group: 'standard' })).body;
+  const finishedAt = new Date().toISOString();
+  assert.equal((await save(s, { status: 'complete', finishedAt })).status, 200);
+  assert.equal((await save(s, { status: 'complete', finishedAt })).status, 200, 'retry of the same final save');
+  assert.equal((await save(s, { status: 'active' })).status, 409, 'stale snapshot');
+  const row = (await call('/admin/sessions')).body.sessions.find((x) => x.participant_id === s.participantId);
+  assert.equal(row.status, 'complete');
+});
+
+test('an abandoned session goes stale and frees its slot until it saves again', async () => {
+  const a = (await start({ group: 'control' })).body;
+  // Pretend the laptop went quiet two hours ago.
+  const { DatabaseSync } = await import('node:sqlite');
+  const raw = new DatabaseSync(process.env.DB_PATH);
+  raw.prepare('UPDATE sessions SET updated_at = ? WHERE participant_id = ?').run(new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), a.participantId);
+  raw.close();
+
+  const status = async (id) => (await call('/admin/sessions')).body.sessions.find((x) => x.participant_id === id).status;
+  assert.equal(await status(a.participantId), 'stale');
+  const b = (await start({ group: 'control' })).body;
+  assert.equal(b.blockOrder, a.blockOrder, 'the stale slot is reused');
+
+  assert.equal((await save(a)).status, 200);
+  assert.equal(await status(a.participantId), 'active', 'a save brings it back');
+});
+
+test('malformed snapshots get a 400, not a crash', async () => {
+  const s = (await start({ group: 'standard' })).body;
+  const put = (body) => call(`/sessions/${s.participantId}`, { method: 'PUT', body: { ...snapshot(s), ...body }, token: s.token });
+  assert.equal((await put({ responses: undefined })).status, 400);
+  assert.equal((await put({ status: 'hacked' })).status, 400);
+  assert.equal((await put({ steps: [{ kind: 'question', section: 'warmup' }] })).status, 400, 'question step without qid');
+  assert.equal((await put({ events: [{ type: 'x' }] })).status, 400, 'event without t');
+  assert.equal((await put({})).status, 200);
+});
+
+test('saves only add new events and answers', async () => {
+  const s = (await start({ group: 'control' })).body;
+  const step = { kind: 'question', section: 'warmup', qid: 'w1', ai: false };
+  const ev = (n) => Array.from({ length: n }, (_, i) => ({ t: i + 1, step: 0, type: `e${i}` }));
+  await save(s, { steps: [step], events: ev(2) });
+  await save(s, { steps: [step], events: ev(5), responses: { 0: { qid: 'w1', selected: 1, correct: false, timeMs: 5 } } });
+  await save(s, { steps: [step], events: ev(6), responses: { 0: { qid: 'w1', selected: 1, correct: false, timeMs: 5 } } });
+
+  const rows = (csv) => csv.replace(/^﻿/, '').split('\r\n').filter((line) => line.includes(s.participantId));
+  assert.equal(rows((await call('/export/events.csv')).body).length, 6);
+  assert.equal(rows((await call('/export/answers.csv')).body).length, 1);
+});
+
+test('CSV cells that look like formulas are escaped; unknown exports 404', async () => {
+  const s = (await start({ group: 'control' })).body;
+  const survey = { tlx: {}, likert: {}, noticedWrong: 'No', comments: '=HYPERLINK("http://x")' };
+  await save(s, { steps: [{ kind: 'questionnaire' }], responses: { 0: survey }, startedAt: new Date().toISOString() });
+  const csv = (await call('/export/participants.csv')).body;
+  assert.ok(csv.includes(`"'=HYPERLINK(""http://x"")"`));
+  assert.equal((await call('/export/constructor.csv')).status, 404);
+});
+
 test('saved sessions fill the tables; demo sessions stay out of exports', async () => {
   const real = (await start({ group: 'adaptive' })).body;
   const demo = (await start({ group: 'adaptive', demo: true })).body;

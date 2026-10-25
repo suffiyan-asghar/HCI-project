@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { exportUrl, fetchAdmin } from '../lib/api';
+import { GROUPS } from '../lib/constants';
 import ResearcherLogin from './ResearcherLogin';
 
-const GROUPS = ['standard', 'adaptive', 'control'];
-const STATUSES = ['complete', 'active', 'excluded', 'aborted'];
+// "stale" is an active session with no saves for a while (closed laptop, crashed browser).
+// It no longer counts towards group balance.
+const STATUSES = ['complete', 'active', 'stale', 'excluded', 'aborted'];
 const EXPORTS = [
   ['participants.csv', 'One row per participant with summary scores'],
   ['answers.csv', 'One row per answered question'],

@@ -45,53 +45,106 @@ export const fetchTutorReply = (token, body) => request('/tutor', { method: 'POS
 export const fetchAdmin = () => request('/admin/sessions');
 export const exportUrl = (file) => `/api/export/${file}?key=${encodeURIComponent(getResearcherKey())}`;
 
-// Session sync: the latest snapshot is sent whenever the session changes, one request at
-// a time. If the server can't be reached it keeps retrying; the browser's own copy
-// (storage.js) still survives a refresh in the meantime.
+// Session sync: the latest snapshot of each session is queued and sent one request at a
+// time. The queue is per participant, so starting the next session never drops an
+// unsent one, and it is kept in localStorage so it also survives a page reload.
+// Network and server errors are retried; a 4xx rejection is not (it would fail forever)
+// and is reported as 'rejected' so the researcher downloads the session instead.
 const RETRY_MS = 5000;
-let latest = null;
+const QUEUE_STORAGE = 'studybot.unsynced';
+const pending = new Map(readQueue()); // participantId -> latest unsent snapshot
+const statuses = new Map(); // participantId -> 'saving' | 'saved' | 'offline' | 'rejected'
 let inFlight = false;
 let retryTimer = null;
-let status = 'saved'; // 'saved' | 'saving' | 'offline'
 const listeners = new Set();
 
-function setStatus(next) {
-  if (next === status) return;
-  status = next;
+function readQueue() {
+  try {
+    return Object.entries(JSON.parse(localStorage.getItem(QUEUE_STORAGE) ?? '{}'));
+  } catch {
+    return [];
+  }
+}
+
+function writeQueue() {
+  try {
+    localStorage.setItem(QUEUE_STORAGE, JSON.stringify(Object.fromEntries(pending)));
+  } catch {
+    // Storage full or blocked: the queue still works until the page is closed.
+  }
+}
+
+function setStatus(id, next) {
+  if (statuses.get(id) === next) return;
+  statuses.set(id, next);
   listeners.forEach((fn) => fn());
 }
 
+function scheduleRetry() {
+  clearTimeout(retryTimer);
+  retryTimer = setTimeout(() => {
+    retryTimer = null;
+    flush();
+  }, RETRY_MS);
+}
+
 async function flush() {
-  if (inFlight || !latest) return;
-  const session = latest;
+  if (inFlight) return;
+  const next = pending.entries().next();
+  if (next.done) return;
+  const [id, session] = next.value;
+
   inFlight = true;
-  setStatus('saving');
+  setStatus(id, 'saving');
+  let retry = false;
   try {
-    await request(`/sessions/${encodeURIComponent(session.participantId)}`, { method: 'PUT', body: session, token: session.token });
-    if (latest === session) latest = null;
-    setStatus(latest ? 'saving' : 'saved');
-  } catch {
-    setStatus('offline');
-    clearTimeout(retryTimer);
-    retryTimer = setTimeout(flush, RETRY_MS);
+    await request(`/sessions/${encodeURIComponent(id)}`, { method: 'PUT', body: session, token: session.token });
+    if (pending.get(id) === session) {
+      pending.delete(id);
+      setStatus(id, 'saved');
+    }
+  } catch (err) {
+    if (err instanceof ApiError && err.status >= 400 && err.status < 500) {
+      if (pending.get(id) === session) pending.delete(id);
+      setStatus(id, 'rejected');
+      console.error(`[sync] server rejected session ${id}: ${err.message}`);
+    } else {
+      // Move it to the back so one unreachable save doesn't block the others, then wait.
+      if (pending.get(id) === session) {
+        pending.delete(id);
+        pending.set(id, session);
+      }
+      setStatus(id, 'offline');
+      retry = true;
+    }
   } finally {
     inFlight = false;
+    writeQueue();
   }
-  if (latest && status !== 'offline') flush();
+  if (retry) scheduleRetry();
+  else flush();
 }
 
 export function syncSession(session) {
-  latest = session;
-  if (status !== 'offline') flush();
+  const id = session.participantId;
+  pending.delete(id); // re-insert so the newest snapshot keeps its place in line
+  pending.set(id, session);
+  writeQueue();
+  if (statuses.get(id) !== 'offline') setStatus(id, 'saving');
+  // While offline, wait for the scheduled retry instead of hitting the server on every click.
+  if (!retryTimer) flush();
 }
 
-export function useSyncStatus() {
+/** Sync state of one session. Sessions this tab never queued count as saved. */
+export function useSyncStatus(participantId) {
   return useSyncExternalStore(
     (fn) => {
       listeners.add(fn);
       return () => listeners.delete(fn);
     },
-    () => status,
-    () => status,
+    () => statuses.get(participantId) ?? (pending.has(participantId) ? 'saving' : 'saved'),
   );
 }
+
+// Snapshots left over from before a reload are sent straight away.
+if (pending.size) flush();

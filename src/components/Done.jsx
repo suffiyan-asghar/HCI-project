@@ -5,16 +5,19 @@ const SYNC_TEXT = {
   saved: 'Saved to the study server',
   saving: 'Saving to the study server…',
   offline: "Not saved to the server yet: it can't be reached. Retrying.",
+  rejected: 'The server rejected this session. Download it and keep the file.',
 };
 
 export default function Done({ session, onReset }) {
   const excluded = session.status === 'excluded';
-  const sync = useSyncStatus();
+  const sync = useSyncStatus(session.participantId);
 
   function nextParticipant() {
-    if (sync !== 'saved' && !window.confirm('This session has not reached the server yet. Download it first. Continue anyway?')) {
-      return;
-    }
+    const warning =
+      sync === 'rejected'
+        ? 'The server rejected this session, so it will not be saved there. Download it first. Continue anyway?'
+        : 'This session has not reached the server yet. It stays queued on this laptop and is sent when the server is back, but download a copy to be safe. Continue anyway?';
+    if (sync !== 'saved' && !window.confirm(warning)) return;
     onReset();
   }
 
@@ -33,7 +36,7 @@ export default function Done({ session, onReset }) {
       <p>Please let the researcher know you've finished.</p>
 
       <div className="researcher-bar">
-        <span className={sync === 'offline' ? 'text-red' : undefined}>
+        <span className={sync === 'offline' || sync === 'rejected' ? 'text-red' : undefined}>
           Researcher · {session.participantId} · {SYNC_TEXT[sync]}
         </span>
         <span>

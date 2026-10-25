@@ -1,6 +1,6 @@
-import { LETTERS } from './questions.js';
+import { LETTERS } from '../src/lib/constants.js';
 
-const bullets = (lines) => lines.map((line) => `- ${line}`).join('\n');
+export const bullets = (lines) => lines.map((line) => `- ${line}`).join('\n');
 
 // Canned replies in the Standard style (short bullets with emojis), built from the
 // question's own fields. Used when no API key is set, and as the fallback when the

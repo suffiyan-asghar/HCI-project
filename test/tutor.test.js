@@ -33,6 +33,18 @@ test('"answer as" is not read as option A', () => {
   assert.equal(check('- 📌 Read the answer as a rule. So it is **(C)**.', 'more'), null);
 });
 
+test('the article "a" is not read as option A', () => {
+  // p1: correct (A). Before the fix, these hints were flagged and replaced with canned replies.
+  const p1 = getQuestion('p1');
+  const checkP1 = (text, level) => checkReply(text, { question: p1, level, planted: false });
+  assert.equal(p1.correct, 0);
+  assert.equal(checkP1('- 🤔 The answer is a word that means the opposite of careful.', 'guide'), null);
+  assert.equal(checkP1('- 🔎 Your answer: a word with a negative tone fits best.', 'hint'), null);
+  assert.equal(checkP1('- 🤔 Is the answer A?', 'guide'), 'revealed the answer');
+  assert.equal(checkP1('- 🔎 Option A fits the contrast.', 'hint'), 'revealed the answer');
+  assert.equal(checkP1(`✅ **Answer: (A) ${p1.options[0]}**\n- because`, 'full'), null);
+});
+
 test('very long replies are flagged', () => {
   assert.equal(check(`✅ **Answer: (C)** ${'word '.repeat(150)}`, 'full'), 'too long');
 });
