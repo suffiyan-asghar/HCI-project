@@ -89,10 +89,16 @@ test('a finished session cannot be overwritten, but its final save can be retrie
 test('an abandoned session goes stale and frees its slot until it saves again', async () => {
   const a = (await start({ group: 'control' })).body;
   // Pretend the laptop went quiet two hours ago.
-  const { DatabaseSync } = await import('node:sqlite');
-  const raw = new DatabaseSync(process.env.DB_PATH);
-  raw.prepare('UPDATE sessions SET updated_at = ? WHERE participant_id = ?').run(new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), a.participantId);
-  raw.close();
+  const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+  if (process.env.DATABASE_URL) {
+    const { query } = await import('../server/db-postgres.js');
+    await query('UPDATE sessions SET updated_at = $1 WHERE participant_id = $2', [twoHoursAgo, a.participantId]);
+  } else {
+    const { DatabaseSync } = await import('node:sqlite');
+    const raw = new DatabaseSync(process.env.DB_PATH);
+    raw.prepare('UPDATE sessions SET updated_at = ? WHERE participant_id = ?').run(twoHoursAgo, a.participantId);
+    raw.close();
+  }
 
   const status = async (id) => (await call('/admin/sessions')).body.sessions.find((x) => x.participant_id === id).status;
   assert.equal(await status(a.participantId), 'stale');

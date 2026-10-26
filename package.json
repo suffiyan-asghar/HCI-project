@@ -11,7 +11,7 @@
     "preserver": "node scripts/require-node.cjs",
     "prestart": "node scripts/require-node.cjs",
     "precheck": "node scripts/require-node.cjs",
-    "server":"node --env-file-if-exists=.env --watch-path=server server/index.js",
+    "server": "node --env-file-if-exists=.env --watch-path=server server/index.js",
     "build": "vite build",
     "build:static": "vite build --mode static",
     "start": "vite build && node --env-file-if-exists=.env server/index.js",
@@ -22,10 +22,12 @@
   "dependencies": {
     "express": "^5.3.0",
     "groq-sdk": "^1.6.0",
+    "pg": "^8.23.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
     "@vitejs/plugin-react": "^4.3.3",
     "vite": "^5.4.10"
   }

@@ -125,7 +125,7 @@ export default function AdminPage() {
             <span className="row-value">Demo build: the finished sessions kept in this browser</span>
           </button>
         ) : (
-          EXPORTS.map(([file, description]) => (
+          EXPORTS.filter(([file]) => file !== 'database.sqlite' || data?.databaseFile !== false).map(([file, description]) => (
             <a key={file} className="row stacked" href={exportUrl(file)}>
               <span className="row-label">{file}</span>
               <span className="row-value">{description}</span>

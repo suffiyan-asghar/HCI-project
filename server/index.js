@@ -35,16 +35,16 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
 
   app.get('/api/researcher/check', researcher, (req, res) => res.json({ ok: true }));
 
-  app.post('/api/sessions', researcher, (req, res) => {
-    res.json(createSession({ group: req.body?.group, demo: req.body?.demo === true }));
+  app.post('/api/sessions', researcher, async (req, res) => {
+    res.json(await createSession({ group: req.body?.group, demo: req.body?.demo === true }));
   });
 
   // Participant routes are authorised by the session's own token (from createSession).
-  app.put('/api/sessions/:id', (req, res) => {
+  app.put('/api/sessions/:id', async (req, res) => {
     const problem = sessionProblem(req.body, req.params.id);
     if (problem) return res.status(400).json({ error: `Malformed session: ${problem}` });
 
-    const result = saveSession(req.body, req.get('x-session-token'), getQuestion);
+    const result = await saveSession(req.body, req.get('x-session-token'), getQuestion);
     if (result === 'unknown') return res.status(404).json({ error: 'Unknown session or wrong token' });
     if (result === 'finished') return res.status(409).json({ error: 'Session already finished' });
     res.json({ ok: true });
@@ -52,7 +52,7 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
 
   app.post('/api/tutor', async (req, res) => {
     const { participantId, qid, level, planted, messages } = req.body ?? {};
-    if (!canUseTutor(participantId, req.get('x-session-token'))) return res.status(403).json({ error: 'No active session' });
+    if (!(await canUseTutor(participantId, req.get('x-session-token')))) return res.status(403).json({ error: 'No active session' });
     const question = getQuestion(qid);
     if (!question || question.plantedWrong === undefined || !LEVELS.includes(level) || !Array.isArray(messages) || messages.length === 0) {
       return res.status(400).json({ error: 'Bad tutor request' });
@@ -60,12 +60,13 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
     res.json(await tutorReply({ question, level, planted: !!planted, messages }));
   });
 
-  app.get('/api/admin/sessions', researcher, (req, res) => {
+  app.get('/api/admin/sessions', researcher, async (req, res) => {
     res.json({
       tutor: tutorStatus(),
       database: DB_PATH,
+      databaseFile: Boolean(backup),
       lastBackup: lastBackup(),
-      sessions: listSessions().map(({ session, ...row }) => ({
+      sessions: (await listSessions()).map(({ session, ...row }) => ({
         ...row,
         progress: session ? `${session.stepIndex} / ${session.steps.length}` : '—',
         startedAt: session?.startedAt ?? row.created_at,
@@ -75,19 +76,21 @@ export function createApp({ password = process.env.RESEARCHER_PASSWORD } = {}) {
 
   // CSV exports for R / Excel. participants.csv has one row per person with summary scores.
   const exports = {
-    participants: () => participantRows(listSessions().filter((s) => !s.demo), getQuestion),
+    participants: async () => participantRows((await listSessions()).filter((s) => !s.demo), getQuestion),
     answers: () => tableRows('answers'),
     chat: () => tableRows('chat_messages'),
     events: () => tableRows('events'),
   };
 
-  app.get('/api/export/:name.csv', researcher, (req, res) => {
+  app.get('/api/export/:name.csv', researcher, async (req, res) => {
     if (!Object.hasOwn(exports, req.params.name)) return res.status(404).end();
     const build = exports[req.params.name];
-    res.attachment(`studybot-${req.params.name}.csv`).type('text/csv').send(toCsv(build()));
+    res.attachment(`studybot-${req.params.name}.csv`).type('text/csv').send(toCsv(await build()));
   });
 
+  // Only the SQLite database is a single downloadable file.
   app.get('/api/export/database.sqlite', researcher, (req, res) => {
+    if (!backup) return res.status(404).json({ error: 'Not a SQLite database: download the CSVs, or back up from Supabase' });
     res.download(backup(), 'studybot.sqlite');
   });
 
@@ -137,7 +140,8 @@ function toCsv(rows) {
 }
 
 // Started directly (npm start / npm run server), not imported by the tests.
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// argv[1] can be missing when a host loads this as a module (Vercel).
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const port = Number(process.env.PORT) || 3000;
   createApp().listen(port, '0.0.0.0', () => {
     const lan = Object.values(networkInterfaces())
@@ -147,7 +151,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.log(`StudyBot server on port ${port}`);
     console.log(`  Study laptops open: ${lan.join('  ') || `http://localhost:${port}`}`);
     console.log(`  Researcher page:    /admin`);
-    console.log(`  Database:           ${DB_PATH} (backed up every 10 minutes to data/backups)`);
+    console.log(`  Database:           ${DB_PATH}${backup ? ' (backed up every 10 minutes to data/backups)' : ''}`);
     console.log(`  Tutor:              ${tutorInfo.mode}${tutorInfo.model ? ` (${tutorInfo.model})` : ' (canned replies; set GROQ_API_KEY for live)'}`);
     if (!process.env.RESEARCHER_PASSWORD) console.log('  WARNING: RESEARCHER_PASSWORD is not set, so /admin and starting sessions are open to anyone on the network.');
     if (!existsSync(DIST)) console.log('  No build found: run "npm run build", or use "npm run dev" for development.');
